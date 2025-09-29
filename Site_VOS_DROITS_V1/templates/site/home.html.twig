@@ -1,0 +1,82 @@
+{% extends 'base.html.twig' %}
+{% block title %}Accueil — Association Défense, Justice et Droit pour Tous{% endblock %}
+
+{% block body %}
+{# --- HERO --- #}
+<section class="hero">
+  <img src="{{ asset('assets/img/hero.jpg') }}" alt="Hero" class="hero-img">
+  <div class="hero-overlay">
+    <h1>Protégez vos droits avec nous, pour une justice équitable pour tous</h1>
+    <a href="#contact" class="btn btn-primary">Rejoignez-nous</a>
+  </div>
+</section>
+
+{# --- INTRO --- #}
+<section class="container intro">
+  <h2>Bienvenue chez Association Défense, Justice et Droit pour Tous</h2>
+  <p>
+    Nous sommes une association engagée à défendre les droits de chacun, en offrant des conseils juridiques adaptés à vos besoins.
+    Notre mission est de garantir une justice équitable pour tous.
+  </p>
+  <p>
+    Chaque procédure ne nécessite pas l’assistance d’un avocat : nous vous guidons, vous conseillons et vous accompagnons
+    tout au long de la procédure.
+  </p>
+</section>
+
+{# --- SERVICES / ABONNEMENT --- #}
+<section class="container services">
+  <h2>Prestations de service : abonnement mensuel pour seulement 10,99&nbsp;euros</h2>
+  <div class="cards">
+    <article class="card">
+      <img src="{{ asset('assets/img/conseil_assistance.jpg') }}" alt="">
+      <h3>Conseils et assistance juridiques personnalisés</h3>
+      <p>Conseils personnalisés : mise en demeure, jugement/ordonnance, acte de saisie, signification, commandements…</p>
+    </article>
+    <article class="card">
+      <img src="{{ asset('assets/img/creation_doc.jpg') }}" alt="">
+      <h3>Aide à la création</h3>
+      <p>Création d’association/entreprise/société, statuts, dissolution, formalités.</p>
+    </article>
+    <article class="card">
+      <img src="{{ asset('assets/img/droit_etranger.jpg') }}" alt="">
+      <h3>Modèles de lettres & documents juridiques</h3>
+      <p>Licenciement, retraite, contestation, bourse, contentieux, etc.</p>
+    </article>
+    <article class="card">
+      <img src="{{ asset('assets/img/mod_lettre.jpg') }}" alt="">
+      <h3>Droit des étrangers</h3>
+      <p>Titres de séjour, nationalité, OQTF, regroupement familial, droits sociaux…</p>
+    </article>
+  </div>
+</section>
+
+{# --- CONTACT (ancre) --- #}
+<section id="contact" class="container contact">
+  <h2>Contactez-nous</h2>
+  <p>Expliquez brièvement votre situation pour obtenir une réponse claire et professionnelle.</p>
+  <form class="contact-form" method="post" action="#">
+    <div class="field"><label>Nom*</label><input type="text" required></div>
+    <div class="field"><label>Adresse e-mail*</label><input type="email" required></div>
+    <div class="field"><label>Message*</label><textarea rows="4" required></textarea></div>
+    <button type="submit" class="btn btn-primary">Envoyer le formulaire</button>
+  </form>
+</section>
+
+{# --- BANDEAU QUI SOMMES-NOUS --- #}
+<section id="about" class="about-band">
+  <div class="container">
+    <h2>Qui sommes nous ?</h2>
+    <p>
+      Association Défense, Justice et Droit pour Tous est engagée pour un accès simple et équitable au droit.
+      Nous simplifions vos démarches, proposons des conseils personnalisés et un accompagnement structuré pour des résultats
+      clairs et efficaces.
+    </p>
+  </div>
+</section>
+
+{# --- CTA BAS DE PAGE --- #}
+<section class="container cta-bottom">
+  <a href="{{ path('subscription') }}" class="btn btn-outline">Rejoignez-nous</a>
+</section>
+{% endblock %}

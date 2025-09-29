@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block title %}Abonnement — 10,99 € / mois{% endblock %}
+{% block body %}
+<section class="container page">
+  <h1>Abonnement mensuel</h1>
+  <p class="muted">Simple, sans engagement, valable pour toute la famille.</p>
+
+  <div class="pricing">
+    <div class="pricing-card">
+      <div class="price">10,99 € / mois</div>
+      <ul class="check">
+        <li>Diagnostic initial & orientation</li>
+        <li>Conseils personnalisés</li>
+        <li>Modèles & création de documents</li>
+        <li>Assistance pas à pas & suivi</li>
+        <li>Arrêt à tout moment</li>
+      </ul>
+      <div class="actions">
+        <a href="{{ path('home') }}#contact" class="btn btn-primary">Souscrire (via contact)</a>
+        <a href="{{ path('cgv') }}" class="btn btn-outline">Lire les CGV / CGU</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="muted">Les frais spécifiques de procédure (huissier, greffe, timbres fiscaux, etc.) restent à la charge du membre.</p>
+</section>
+{% endblock %}

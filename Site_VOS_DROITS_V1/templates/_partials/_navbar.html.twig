@@ -1,0 +1,11 @@
+<header class="topbar">
+  <div class="container">
+    <div class="site-mini-title">Association Défense, Justice et Droit pour Tous</div>
+    <nav class="tabs">
+      <a class="tab {% if app.request.attributes.get('_route') == 'home' %}active{% endif %}" href="{{ path('home') }}">ACCUEIL</a>
+      <a class="tab" href="{{ path('home') }}#about">À PROPOS DE NOUS</a>
+      <a class="tab {% if app.request.attributes.get('_route') == 'subscription' %}active{% endif %}" href="{{ path('subscription') }}">ABONNEMENT</a>
+      <a class="tab" href="{{ path('home') }}#contact">CONTACT</a>
+    </nav>
+  </div>
+</header>
