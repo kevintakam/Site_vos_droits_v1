@@ -1,0 +1,32 @@
+# Dépendances
+/vendor/
+
+# Cache et logs
+/var/
+
+# Fichiers générés par Symfony
+/public/bundles/
+/symfony.lock
+
+# Environnements locaux
+/.env.local
+/.env.*.local
+/.env.dev
+/.env.test
+/.env.local.php
+
+# PHPUnit
+.phpunit.result.cache
+.phpunit.cache
+
+# IDE / éditeurs (au cas où)
+.idea/
+/.vscode/
+/nbproject/
+/*.swp
+*~
+*.kate-swp
+
+# Fichiers système
+.DS_Store
+Thumbs.db
