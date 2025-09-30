@@ -45,7 +45,7 @@
     <div class="field checkbox required">
       <label>
         {{ form_widget(registrationForm.agreeTerms) }}
-        J’accepte les <a href="{{ path('cgv') }}" target="_blank" rel="noopener">CGU</a>
+        J’accepte les <a href="{{ path('cgv') }}" target="_blank" rel="noopener" class="cgu">CGU</a>
       </label>
       <div class="form-error">{{ form_errors(registrationForm.agreeTerms) }}</div>
     </div>

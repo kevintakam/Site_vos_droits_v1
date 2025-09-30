@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+{% block title %}Vérifiez votre e-mail{% endblock %}
+
+{% block body %}
+{% for label, messages in app.flashes %}
+  {% for message in messages %}
+    <div class="alert alert-{{ label }}">{{ message|raw }}</div>
+  {% endfor %}
+{% endfor %}
+  <div class="card" style="max-width:720px;margin:2rem auto;">
+    <h1>Vérification requise</h1>
+    <p>
+      Nous avons envoyé un e-mail de vérification à votre adresse.
+      Cliquez sur le lien pour activer votre compte.
+    </p>
+
+    <p class="muted">Vous n’avez rien reçu ?</p>
+    <form method="post" action="{{ path('app_verify_resend') }}">
+      <button class="btn btn-outline">Renvoyer l’e-mail de vérification</button>
+    </form>
+
+    <p class="mt-3">
+      <a class="btn btn-primary" href="{{ path('home') }}">Retour à l’accueil</a>
+    </p>
+  </div>
+{% endblock %}

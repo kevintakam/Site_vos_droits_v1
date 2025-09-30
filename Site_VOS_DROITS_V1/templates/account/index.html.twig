@@ -1,9 +1,7 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Hello AccountController!{% endblock %}
+{% block title %}Mon compte{% endblock %}
 
 {% block body %}
-{# templates/account/index.html.twig #}
 <h1>Mon compte</h1>
 
 {% for label, messages in app.flashes %}
@@ -12,7 +10,7 @@
   {% endfor %}
 {% endfor %}
 
-<section class="account-grid">
+<section class="account-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
   <div>
     <h2>Mes informations</h2>
     {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
@@ -25,28 +23,81 @@
   </div>
 
   <div>
-    <h2>Mon abonnement</h2>
+    <h2>
+      Mon abonnement
+      {% if hasActive %}
+        <span class="badge bg-success">Actif</span>
+      {% elseif subscription %}
+        <span class="badge bg-warning text-dark">Inactif</span>
+      {% else %}
+        <span class="badge bg-secondary">Aucun</span>
+      {% endif %}
+    </h2>
+
     {% if subscription %}
-      <p>Statut : <strong>{{ subscription.status }}</strong></p>
+      <p>Statut Stripe : <strong>{{ subscription.status }}</strong></p>
       {% if subscription.currentPeriodEnd %}
         <p>Valide jusqu’au : <strong>{{ subscription.currentPeriodEnd|date('d/m/Y H:i') }}</strong></p>
       {% endif %}
-      {% if subscription.isActive() %}
-        <form method="post" action="{{ path('subscription_portal') }}">
-          <button class="btn btn-outline">Gérer via Stripe</button>
-        </form>
-      {% else %}
-        <form method="post" action="{{ path('subscription_checkout') }}">
-          <button class="btn btn-primary">Se réabonner</button>
-        </form>
-      {% endif %}
     {% else %}
-      <p>Aucun abonnement actif.</p>
+      <p>Aucun abonnement actif pour l’instant.</p>
+    {% endif %}
+
+    {% if stripe.upcomingInvoice %}
+      <p>
+        Prochaine échéance :
+        <strong>{{ (stripe.upcomingInvoice.amount_due / 100)|number_format(2, ',', ' ') }} €</strong>
+        le <strong>
+          {% if stripe.upcomingInvoice.next_payment_attempt %}
+            {{ stripe.upcomingInvoice.next_payment_attempt|date('d/m/Y H:i') }}
+          {% else %}
+            {{ stripe.upcomingInvoice.created|date('d/m/Y H:i') }}
+          {% endif %}
+        </strong>
+      </p>
+    {% endif %}
+
+    {% if stripe.default_pm %}
+      {% set card = stripe.default_pm.card ?? null %}
+      <p>
+        Moyen de paiement :
+        <strong>{{ card.brand|default('Carte')|capitalize }}</strong>
+        — **** **** **** {{ card.last4|default('****') }}
+        (exp. {{ '%02d'|format(card.exp_month|default(0)) }}/{{ card.exp_year|default('') }})
+      </p>
+    {% endif %}
+
+    {% if hasActive %}
+      <form method="post" action="{{ path('subscription_portal') }}">
+        <button class="btn btn-outline">Gérer via Stripe</button>
+      </form>
+    {% elseif subscription %}
+      <form method="post" action="{{ path('subscription_checkout') }}">
+        <button class="btn btn-primary">Se réabonner</button>
+      </form>
+    {% else %}
       <form method="post" action="{{ path('subscription_checkout') }}">
         <button class="btn btn-primary">Souscrire</button>
       </form>
     {% endif %}
+
+    {% if stripe.invoices is not empty %}
+      <h3 style="margin-top:1.5rem;">Mes dernières factures</h3>
+      <ul>
+        {% for inv in stripe.invoices %}
+          <li>
+            {{ inv.number }} — {{ (inv.total / 100)|number_format(2, ',', ' ') }} €
+            ({{ inv.status }}) — {{ inv.created|date('d/m/Y') }}
+            {% if inv.hosted_invoice_url %}
+              — <a href="{{ inv.hosted_invoice_url }}" target="_blank" rel="noopener">Voir</a>
+            {% endif %}
+            {% if inv.invoice_pdf %}
+              — <a href="{{ inv.invoice_pdf }}" target="_blank" rel="noopener">PDF</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
   </div>
 </section>
-
 {% endblock %}

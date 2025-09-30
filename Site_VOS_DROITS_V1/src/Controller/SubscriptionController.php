@@ -85,7 +85,7 @@ public function success(Request $request): Response
 #[Route('/abonnement/portal', name: 'subscription_portal', methods: ['POST'])]
 public function portal(Security $sec): Response
 {
-    /** @var User|null $user */
+    /** @var \App\Entity\User|null $user */
     $user = $sec->getUser();
     if (!$user || !$user->getStripeCustomerId()) {
         $this->addFlash('error', 'Aucun compte Stripe trouvé.');
@@ -94,12 +94,30 @@ public function portal(Security $sec): Response
 
     \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
 
-    $session = \Stripe\BillingPortal\Session::create([
-        'customer' => $user->getStripeCustomerId(),
+    // Paramètres de base requis
+    $params = [
+        'customer'   => $user->getStripeCustomerId(),
         'return_url' => rtrim($_ENV['APP_URL'], '/').$this->generateUrl('account'),
-    ]);
+    ];
 
-    return $this->redirect($session->url);
+    // 👇 Si une configuration spécifique est définie, on l’utilise
+    if (!empty($_ENV['STRIPE_PORTAL_CONFIGURATION_ID'])) {
+        $params['configuration'] = $_ENV['STRIPE_PORTAL_CONFIGURATION_ID'];
+    }
+
+    try {
+        $session = \Stripe\BillingPortal\Session::create($params);
+        return $this->redirect($session->url);
+    } catch (\Stripe\Exception\ApiErrorException $e) {
+        // Erreurs Stripe (ex: portail non configuré en mode test)
+        $this->addFlash('error', 'Impossible d’ouvrir le portail client Stripe : '.$e->getMessage());
+    } catch (\Throwable $e) {
+        // Autres erreurs (réseau, etc.)
+        $this->addFlash('error', 'Une erreur est survenue lors de l’ouverture du portail client.');
+    }
+
+    return $this->redirectToRoute('account');
 }
+
 
 }

@@ -798,13 +798,13 @@ a {
     font-size: .9rem;
 }
 
-.auth-alt a {
+.auth-alt a, .cgu {
     color: #1976d2;
     font-weight: 600;
     text-decoration: none;
 }
 
-.auth-alt a:hover {
+.auth-alt a:hover , .cgu:hover {
     text-decoration: underline;
 }
 
@@ -873,7 +873,7 @@ a {
 }
 
 .subscription-success .btn-primary:hover {
-    background: #135ba1;
+    background:var(--brand);
 }
 
 @keyframes fadeInUp {
@@ -1029,4 +1029,191 @@ a {
     font-size: .9rem;
     color: #6c757d;
     margin-top: .25rem;
+}
+
+/* ====== Layouts ====== */
+.account-grid,
+.subs-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 0.8fr;
+    gap: 2rem;
+    align-items: start;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+@media (max-width: 920px) {
+
+    .account-grid,
+    .subs-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ====== Cards ====== */
+.card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .06);
+    padding: 1.5rem;
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 1.25rem;
+}
+
+/* ====== Headers ====== */
+.page-title {
+    margin: 2rem 0 1rem;
+    font-size: 1.8rem;
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: .6rem;
+    margin: 0 0 1rem;
+}
+
+.badge {
+    display: inline-block;
+    padding: .25rem .6rem;
+    border-radius: 999px;
+    font-size: .8rem;
+    border: 1px solid transparent;
+}
+
+.badge.success {
+    background: #e9f5ee;
+    color: #1b5e20;
+    border-color: #c8e6c9;
+}
+
+.badge.warn {
+    background: #fff7e6;
+    color: #8a5200;
+    border-color: #ffe0b2;
+}
+
+.badge.muted {
+    background: #f1f3f5;
+    color: #495057;
+    border-color: #e9ecef;
+}
+
+/* ====== Forms ====== */
+form .form-row {
+    margin-bottom: 1rem;
+}
+
+form label {
+    font-weight: 600;
+    margin-bottom: .35rem;
+    display: block;
+}
+
+form input,
+form select,
+form textarea {
+    padding: .7rem .9rem;
+    border: 1px solid #dadfe4;
+    border-radius: 10px;
+    font-size: .95rem;
+    transition: border-color .2s, box-shadow .2s;
+    background: #fff;
+}
+
+form input:focus,
+form select:focus,
+form textarea:focus {
+    border-color: #1976d2;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, .15);
+    outline: none;
+}
+
+/* ====== Buttons ====== */
+.btn {
+    display: inline-block;
+    padding: .85rem 1.15rem;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1;
+}
+
+
+
+.btn-outline:hover {
+    background: #e7f0fb;
+}
+
+.btn-block {
+    width: 100%;
+    text-align: center;
+}
+
+/* ====== Alerts ====== */
+.alert {
+    padding: .85rem 1rem;
+    border-radius: 12px;
+    margin: 1rem 0 1.25rem;
+    font-size: .95rem;
+    border: 1px solid transparent;
+}
+
+.alert-success {
+    background: #edf7ed;
+    color: #1b5e20;
+    border-color: #c8e6c9;
+}
+
+.alert-error,
+.alert-danger {
+    background: #fdecea;
+    color: #b71c1c;
+    border-color: #f5c2c0;
+}
+
+.alert-info {
+    background: #e8f1fb;
+    color: #0d47a1;
+    border-color: #bbdefb;
+}
+
+/* ====== Lists ====== */
+.list {
+    list-style: none;
+    padding: 0;
+    margin: .75rem 0 0;
+}
+
+.list li {
+    padding: .45rem 0;
+    border-bottom: 1px dashed #e9ecef;
+    font-size: .95rem;
+}
+
+.list li:last-child {
+    border-bottom: 0;
+}
+
+/* ====== Utilities ====== */
+.muted {
+    color: #6c757d;
+}
+
+.mt-2 {
+    margin-top: .5rem;
+}
+
+.mt-3 {
+    margin-top: 1rem;
+}
+
+.mt-4 {
+    margin-top: 1.5rem;
 }

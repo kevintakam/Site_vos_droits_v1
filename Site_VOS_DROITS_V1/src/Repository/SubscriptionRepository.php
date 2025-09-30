@@ -1,43 +1,33 @@
 <?php
-
+// src/Repository/SubscriptionRepository.php
 namespace App\Repository;
 
 use App\Entity\Subscription;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Subscription>
- */
-class SubscriptionRepository extends ServiceEntityRepository
+final class SubscriptionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Subscription::class);
     }
 
-    //    /**
-    //     * @return Subscription[] Returns an array of Subscription objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /** Dernière subscription connue d’un utilisateur */
+    public function findLatestForUser(User $user): ?Subscription
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.user = :u')->setParameter('u', $user)
+            ->orderBy('s.id', 'DESC')
+            ->setMaxResults(1)
+            ->getQuery()->getOneOrNullResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Subscription
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /** Vrai si une subscription active existe à l’instant T */
+    public function hasActiveForUser(User $user): bool
+    {
+        $sub = $this->findLatestForUser($user);
+        return $sub?->isActive() ?? false;
+    }
 }

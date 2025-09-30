@@ -32,7 +32,7 @@
      {% if app.user %}
         {% if hasActiveSubscription %}
         <a class="btn btn-outline is-disabled" aria-disabled="true" tabindex="-1">Abonné — {{ subscription.currentPeriodEnd ? ('jusqu’au ' ~ subscription.currentPeriodEnd|date('d/m/Y')) : 'actif' }}</a>
-        <a href="{{ path('subscription') }}" class="btn btn-primary">Mon compte</a>
+        <a href="{{ path('account') }}" class="btn btn-primary">Mon compte</a>
         {% else %}
         <form method="post" action="{{ path('subscription_checkout') }}" style="display:inline">
             <button class="btn btn-outline">S’abonner — 10,99 €</button>
@@ -204,7 +204,7 @@
     </p>
   </div>
 </section>
-
+<!--
 <section class="container cta-bottom">
    {% if app.user and hasActiveSubscription %}
     <a href="{{ path('subscription') }}" class="btn btn-outline">Mon compte</a>
@@ -213,7 +213,8 @@
       {{ app.user ? 'S’abonner — 10,99 €' : 'S’abonner — 10,99 €' }}
     </a>
   {% endif %}
-</section>
+</section> -->
+
 {% endblock %}
 {% block javascripts %}
   {{ parent() }}
