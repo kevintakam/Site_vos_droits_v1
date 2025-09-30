@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Abonnement réussi{% endblock %}
+
+{% block body %}
+<div class="subscription-success">
+  <h1>🎉 Merci pour votre abonnement</h1>
+  <p>
+    Votre paiement a bien été enregistré.<br>
+    L’activation de votre abonnement est en cours.
+  </p>
+
+  <p>
+    Vous pouvez consulter <a href="{{ path('account') }}">votre espace Mon compte</a>
+    pour vérifier l’état de votre abonnement.
+  </p>
+
+  <a href="{{ path('home') }}" class="btn btn-primary">Retour à l’accueil</a>
+</div>
+{% endblock %}

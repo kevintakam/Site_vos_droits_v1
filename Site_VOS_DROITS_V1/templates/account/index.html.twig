@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AccountController!{% endblock %}
+
+{% block body %}
+{# templates/account/index.html.twig #}
+<h1>Mon compte</h1>
+
+{% for label, messages in app.flashes %}
+  {% for message in messages %}
+    <div class="alert alert-{{ label }}">{{ message|raw }}</div>
+  {% endfor %}
+{% endfor %}
+
+<section class="account-grid">
+  <div>
+    <h2>Mes informations</h2>
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+      {{ form_row(form.firstname) }}
+      {{ form_row(form.lastname) }}
+      {{ form_row(form.email) }}
+      {{ form_row(form.phone) }}
+      <button class="btn btn-primary">Enregistrer</button>
+    {{ form_end(form) }}
+  </div>
+
+  <div>
+    <h2>Mon abonnement</h2>
+    {% if subscription %}
+      <p>Statut : <strong>{{ subscription.status }}</strong></p>
+      {% if subscription.currentPeriodEnd %}
+        <p>Valide jusqu’au : <strong>{{ subscription.currentPeriodEnd|date('d/m/Y H:i') }}</strong></p>
+      {% endif %}
+      {% if subscription.isActive() %}
+        <form method="post" action="{{ path('subscription_portal') }}">
+          <button class="btn btn-outline">Gérer via Stripe</button>
+        </form>
+      {% else %}
+        <form method="post" action="{{ path('subscription_checkout') }}">
+          <button class="btn btn-primary">Se réabonner</button>
+        </form>
+      {% endif %}
+    {% else %}
+      <p>Aucun abonnement actif.</p>
+      <form method="post" action="{{ path('subscription_checkout') }}">
+        <button class="btn btn-primary">Souscrire</button>
+      </form>
+    {% endif %}
+  </div>
+</section>
+
+{% endblock %}

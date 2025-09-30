@@ -29,7 +29,19 @@
 
     <div class="intro-actions">
       <a href="#contact" class="btn btn-primary">Contact rapide</a>
-      <a href="{{ path('subscription') }}" class="btn btn-outline">S’abonner — 10,99 €</a>
+     {% if app.user %}
+        {% if hasActiveSubscription %}
+        <a class="btn btn-outline is-disabled" aria-disabled="true" tabindex="-1">Abonné — {{ subscription.currentPeriodEnd ? ('jusqu’au ' ~ subscription.currentPeriodEnd|date('d/m/Y')) : 'actif' }}</a>
+        <a href="{{ path('subscription') }}" class="btn btn-primary">Mon compte</a>
+        {% else %}
+        <form method="post" action="{{ path('subscription_checkout') }}" style="display:inline">
+            <button class="btn btn-outline">S’abonner — 10,99 €</button>
+        </form>
+        {% endif %}
+    {% else %}
+        <a href="{{ path('app_login') }}" class="btn btn-outline">S’abonner — 10,99 €</a>
+        <small class="hint">Connexion / création de compte requise</small>
+    {% endif %}
     </div>
   </div>
 </section>
@@ -194,6 +206,17 @@
 </section>
 
 <section class="container cta-bottom">
-  <a href="{{ path('subscription') }}" class="btn btn-outline">Rejoignez-nous</a>
+   {% if app.user and hasActiveSubscription %}
+    <a href="{{ path('subscription') }}" class="btn btn-outline">Mon compte</a>
+  {% else %}
+    <a href="{{ app.user ? path('subscription') : path('app_login') }}" class="btn btn-outline">
+      {{ app.user ? 'S’abonner — 10,99 €' : 'S’abonner — 10,99 €' }}
+    </a>
+  {% endif %}
 </section>
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 {% endblock %}
