@@ -28,8 +28,8 @@
     </p>
 
     <div class="intro-actions">
-      <a href="#contact" class="btn btn-primary">Contact rapide</a>
      {% if app.user %}
+     <a href="{{ path('account') }}" class="btn btn-primary">Mon compte</a>
         {% if hasActiveSubscription %}
         <a class="btn btn-outline is-disabled" aria-disabled="true" tabindex="-1">Abonné — {{ subscription.currentPeriodEnd ? ('jusqu’au ' ~ subscription.currentPeriodEnd|date('d/m/Y')) : 'actif' }}</a>
         <a href="{{ path('account') }}" class="btn btn-primary">Mon compte</a>
@@ -103,13 +103,9 @@
 
   {% if form is defined %}
 
-    {# Thème optionnel Bootstrap :
-    {% form_theme form 'bootstrap_5_layout.html.twig' %}
-    #}
 
     {{ form_start(form, {'attr': {'class': 'contact-form', 'novalidate': 'novalidate'}}) }}
 
-      {# Erreurs globales du formulaire (ex: CSRF, etc.) #}
       {{ form_errors(form) }}
 
       <div class="form-grid">

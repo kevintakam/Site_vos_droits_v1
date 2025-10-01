@@ -170,11 +170,6 @@ a {
     border-color: var(--brand-dark)
 }
 
-.btn-outline {
-    background: #fff;
-    color: var(--brand);
-    border-color: var(--brand)
-}
 
 .btn-outline:hover {
     background: #f7ecea
@@ -286,15 +281,8 @@ a {
     border-color: var(--brand-dark);
 }
 
-.btn-outline {
-    background: #fff;
-    color: var(--brand);
-    border-color: var(--brand);
-}
 
-.btn-outline:hover {
-    background: #f7ecea;
-}
+
 
 /* Responsive resserré */
 @media (max-width: 560px) {
@@ -1002,8 +990,8 @@ a {
 }
 
 .btn-outline {
-    background: #fff;
-    color: #1976d2;
+    background: #1976d2;
+    color: #fff;
     border-color: #1976d2;
 }
 

@@ -1,0 +1,10 @@
+<!doctype html><html lang="fr"><body style="font-family:system-ui,Segoe UI,Roboto,Arial">
+  <h2>Nouveau message de contact</h2>
+  <p><strong>Nom :</strong> {{ (c.firstName ~ ' ' ~ c.lastName)|trim }}</p>
+  <p><strong>Email :</strong> {{ c.email }}</p>
+  {% if c.phone %}<p><strong>Téléphone :</strong> {{ c.phone }}</p>{% endif %}
+  <p><strong>Message :</strong></p>
+  <p style="white-space:pre-line">{{ c.message }}</p>
+  <hr>
+  <small>Reçu le {{ c.createdAt ? c.createdAt|date('d/m/Y H:i') : "—" }}</small>
+</body></html>
