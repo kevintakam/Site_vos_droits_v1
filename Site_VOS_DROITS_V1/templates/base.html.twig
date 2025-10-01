@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}Association Défense, Justice et Droit pour Tous{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Conseils juridiques clairs, abonnement simple, accompagnement pas à pas.{% endblock %}">
+  <link rel="icon" href="{{ asset('assets/img/logo.png') }}">
+  <link rel="stylesheet" href="{{ asset('assets/styles/app.css') }}">
+  {% block styles %}{% endblock %}
+</head>
+<body>
+  {% include '_partials/_navbar.html.twig' %}
+  <main id="content">{% block body %}{% endblock %}</main>
+  {% include '_partials/footer.html.twig' %}
+  {% block scripts %}{% endblock %}
+</body>
+</html>
