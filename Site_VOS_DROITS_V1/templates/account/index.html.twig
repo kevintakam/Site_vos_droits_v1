@@ -69,7 +69,7 @@
 
     {% if hasActive %}
       <form method="post" action="{{ path('subscription_portal') }}">
-        <button class="btn btn-outline">Gérer via Stripe</button>
+        <!--<button class="btn btn-outline">Gérer</button>-->
       </form>
     {% elseif subscription %}
       <form method="post" action="{{ path('subscription_checkout') }}">

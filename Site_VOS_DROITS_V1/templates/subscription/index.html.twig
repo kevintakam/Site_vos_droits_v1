@@ -27,7 +27,7 @@
         {% if subscription.currentPeriodEnd %}
           — valide jusqu’au <strong>{{ subscription.currentPeriodEnd|date('d/m/Y') }}</strong>
         {% endif %}
-        (statut Stripe : <strong>{{ subscription.status }}</strong>).
+        ( <strong>{{ subscription.status }}</strong>).
       </div>
 
       <div class="subs-grid">
@@ -39,7 +39,7 @@
         </div>
         <div>
           <form method="post" action="{{ path('subscription_portal') }}">
-            <button class="btn btn-outline btn-block">Gérer mon abonnement (Stripe)</button>
+            <button class="btn btn-outline btn-block">Gérer mon abonnement</button>
           </form>
         </div>
       </div>

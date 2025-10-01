@@ -271,15 +271,6 @@ a {
     cursor: pointer;
 }
 
-.btn-primary {
-    background: var(--brand);
-    color: #fff;
-}
-
-.btn-primary:hover {
-    background: var(--brand-dark);
-    border-color: var(--brand-dark);
-}
 
 
 
@@ -986,7 +977,9 @@ a {
 }
 
 .btn-primary:hover {
-    background: #135ba1;
+    transform: translateY(-1px);
+    filter: brightness(1.02);
+    box-shadow:0 10px 24px rgba(0, 0, 0, .12), 0 0 0 3px rgba(139, 74, 60, .15);
 }
 
 .btn-outline {

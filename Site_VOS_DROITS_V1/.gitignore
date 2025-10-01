@@ -8,12 +8,17 @@
 /public/bundles/
 /symfony.lock
 
+
 # Environnements locaux
-/.env.local
-/.env.*.local
-/.env.dev
-/.env.test
-/.env.local.php
+# Env files (partout)
+**/.env
+**/.env.local
+**/.env.*.local
+**/.env.docker
+**/.env.dev
+**/.env.test
+**/.env.local.php
+
 
 # PHPUnit
 .phpunit.result.cache
