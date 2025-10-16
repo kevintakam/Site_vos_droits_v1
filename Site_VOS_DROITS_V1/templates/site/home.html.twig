@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 {% block title %}Accueil — Association Défense, Justice et Droit pour Tous{% endblock %}
 
-
 {% block body %}
 <section class="hero">
   <img src="{{ asset('assets/img/hero.jpg') }}" alt="Hero" class="hero-img">
@@ -10,7 +9,6 @@
     <a href="#contact" class="btn btn-primary">Rejoignez-nous</a>
   </div>
 </section>
-
 
 <section class="container intro intro--card">
   <div class="intro-card">
@@ -25,6 +23,16 @@
     <p>
       Chaque procédure ne nécessite pas l’assistance d’un avocat : nous vous guidons, vous conseillons et vous accompagnons
       tout au long de la procédure.
+    </p>
+
+    {# Lien bleu discret — ouvre dans un nouvel onglet et propose le téléchargement #}
+    <p class="text-center mt-3">
+      <a href="{{ asset('docs/plaquette-association.pdf') }}"
+         target="_blank" rel="noopener"
+         download="plaquette-association.pdf"
+         class="brochure-link">
+        📄 Télécharger notre brochure (PDF)
+      </a>
     </p>
 
     <div class="intro-actions">
@@ -45,7 +53,6 @@
     </div>
   </div>
 </section>
-
 
 <section class="container services">
   <h2>Prestations de service : abonnement mensuel pour seulement 10,99&nbsp;euros</h2>
@@ -72,13 +79,15 @@
     </article>
   </div>
 </section>
+
 {% for label, messages in app.flashes %}
-    {% for message in messages %}
-        <div class="alert alert-{{ label }}">
-            {{ message|raw }}
-        </div>
-    {% endfor %}
+  {% for message in messages %}
+    <div class="alert alert-{{ label }}">
+      {{ message|raw }}
+    </div>
+  {% endfor %}
 {% endfor %}
+
 <section id="contact" class="container contact-split">
   <div class="contact-copy">
     <span class="overline">Nous écrire</span>
@@ -99,83 +108,63 @@
   </div>
 
   <div class="contact-form-card">
- <h3>Contact rapide</h3>
+    <h3>Contact rapide</h3>
 
-  {% if form is defined %}
+    {% if form is defined %}
+      {{ form_start(form, {'attr': {'class': 'contact-form', 'novalidate': 'novalidate'}}) }}
+        {{ form_errors(form) }}
 
-
-    {{ form_start(form, {'attr': {'class': 'contact-form', 'novalidate': 'novalidate'}}) }}
-
-      {{ form_errors(form) }}
-
-      <div class="form-grid">
-        <div class="field required {{ form_errors(form.firstname) ? 'has-error' : '' }}">
-          {{ form_label(form.firstname, 'Prénom <span class="req">*</span>', {'label_html': true}) }}
-          {{ form_widget(form.firstname, {
-            attr: {
-              'aria-invalid': form_errors(form.firstname) ? 'true' : 'false'
-            }
-          }) }}
-          <div class="form-error">{{ form_errors(form.firstname) }}</div>
+        <div class="form-grid">
+          <div class="field required {{ form_errors(form.firstname) ? 'has-error' : '' }}">
+            {{ form_label(form.firstname, 'Prénom <span class="req">*</span>', {'label_html': true}) }}
+            {{ form_widget(form.firstname, { attr: { 'aria-invalid': form_errors(form.firstname) ? 'true' : 'false' } }) }}
+            <div class="form-error">{{ form_errors(form.firstname) }}</div>
+          </div>
+          <div class="field required {{ form_errors(form.lastname) ? 'has-error' : '' }}">
+            {{ form_label(form.lastname, 'Nom <span class="req">*</span>', {'label_html': true}) }}
+            {{ form_widget(form.lastname, { attr: { 'aria-invalid': form_errors(form.lastname) ? 'true' : 'false' } }) }}
+            <div class="form-error">{{ form_errors(form.lastname) }}</div>
+          </div>
         </div>
-        <div class="field required {{ form_errors(form.lastname) ? 'has-error' : '' }}">
-          {{ form_label(form.lastname, 'Nom <span class="req">*</span>', {'label_html': true}) }}
-          {{ form_widget(form.lastname, {
-            attr: {
-              'aria-invalid': form_errors(form.lastname) ? 'true' : 'false'
-            }
-          }) }}
-          <div class="form-error">{{ form_errors(form.lastname) }}</div>
+
+        <div class="field required {{ form_errors(form.email) ? 'has-error' : '' }}">
+          {{ form_label(form.email, 'Email <span class="req">*</span>', {'label_html': true}) }}
+          {{ form_widget(form.email, { attr: { 'aria-invalid': form_errors(form.email) ? 'true' : 'false' } }) }}
+          <div class="form-error">{{ form_errors(form.email) }}</div>
         </div>
-      </div>
-      <div class="field required {{ form_errors(form.email) ? 'has-error' : '' }}">
-        {{ form_label(form.email, 'Email <span class="req">*</span>', {'label_html': true}) }}
-        {{ form_widget(form.email, {
-          attr: {
-            'aria-invalid': form_errors(form.email) ? 'true' : 'false'
-          }
-        }) }}
-        <div class="form-error">{{ form_errors(form.email) }}</div>
-      </div>
-      <div class="field {{ form_errors(form.phone) ? 'has-error' : '' }}">
-        {{ form_label(form.phone, 'Téléphone') }}
-        {{ form_widget(form.phone) }}
-        <div class="form-error">{{ form_errors(form.phone) }}</div>
-      </div>
-      <div class="field required {{ form_errors(form.message) ? 'has-error' : '' }}">
-        {{ form_label(form.message, 'Message <span class="req">*</span>', {'label_html': true}) }}
-        {{ form_widget(form.message, {
-          attr: {
-            rows: 6,
-            'aria-invalid': form_errors(form.message) ? 'true' : 'false'
-          }
-        }) }}
-        <div class="form-error">{{ form_errors(form.message) }}</div>
-      </div>
-      <div class="field checkbox required {{ form_errors(form.is_accepted_cgu) ? 'has-error' : '' }}">
-        <label>
-          {{ form_widget(form.is_accepted_cgu, {
-            attr: {
-              'aria-invalid': form_errors(form.is_accepted_cgu) ? 'true' : 'false'
-            }
-          }) }}
-          J’accepte les CGU <span class="req">*</span>
-        </label>
-        <div class="form-error">{{ form_errors(form.is_accepted_cgu) }}</div>
-      </div>
-      {% if form.vars.submitted and not form.vars.valid %}
-        <p class="form-error-global">Le formulaire contient des erreurs. Veuillez corriger les champs en rouge.</p>
-      {% endif %}
 
-      <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
+        <div class="field {{ form_errors(form.phone) ? 'has-error' : '' }}">
+          {{ form_label(form.phone, 'Téléphone') }}
+          {{ form_widget(form.phone) }}
+          <div class="form-error">{{ form_errors(form.phone) }}</div>
+        </div>
 
-    {{ form_end(form) }}
+        <div class="field required {{ form_errors(form.message) ? 'has-error' : '' }}">
+          {{ form_label(form.message, 'Message <span class="req">*</span>', {'label_html': true}) }}
+          {{ form_widget(form.message, { attr: { rows: 6, 'aria-invalid': form_errors(form.message) ? 'true' : 'false' } }) }}
+          <div class="form-error">{{ form_errors(form.message) }}</div>
+        </div>
+
+        <div class="field checkbox required {{ form_errors(form.is_accepted_cgu) ? 'has-error' : '' }}">
+          <label>
+            {{ form_widget(form.is_accepted_cgu, { attr: { 'aria-invalid': form_errors(form.is_accepted_cgu) ? 'true' : 'false' } }) }}
+            J’accepte les CGU <span class="req">*</span>
+          </label>
+          <div class="form-error">{{ form_errors(form.is_accepted_cgu) }}</div>
+        </div>
+
+        {% if form.vars.submitted and not form.vars.valid %}
+          <p class="form-error-global">Le formulaire contient des erreurs. Veuillez corriger les champs en rouge.</p>
+        {% endif %}
+
+        <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
+      {{ form_end(form) }}
 
     {% else %}
-    <form class="contact-form" method="post" action="#">
+      <form class="contact-form" method="post" action="#">
         <div class="form-grid">
-        <div class="field required"><label>Prénom <span class="req">*</span></label><input type="text" required></div>
-        <div class="field required"><label>Nom <span class="req">*</span></label><input type="text" required></div>
+          <div class="field required"><label>Prénom <span class="req">*</span></label><input type="text" required></div>
+          <div class="field required"><label>Nom <span class="req">*</span></label><input type="text" required></div>
         </div>
         <div class="field required"><label>Email <span class="req">*</span></label><input type="email" required></div>
         <div class="field"><label>Téléphone</label><input type="text"></div>
@@ -184,9 +173,8 @@
 
         <p class="form-error-global d-none">Le formulaire contient des erreurs. Veuillez corriger les champs en rouge.</p>
         <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
-    </form>
-{% endif %}
-
+      </form>
+    {% endif %}
   </div>
 </section>
 
@@ -200,20 +188,9 @@
     </p>
   </div>
 </section>
-<!--
-<section class="container cta-bottom">
-   {% if app.user and hasActiveSubscription %}
-    <a href="{{ path('subscription') }}" class="btn btn-outline">Mon compte</a>
-  {% else %}
-    <a href="{{ app.user ? path('subscription') : path('app_login') }}" class="btn btn-outline">
-      {{ app.user ? 'S’abonner — 10,99 €' : 'S’abonner — 10,99 €' }}
-    </a>
-  {% endif %}
-</section> -->
-
 {% endblock %}
+
 {% block javascripts %}
   {{ parent() }}
-
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 {% endblock %}
