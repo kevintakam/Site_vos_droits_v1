@@ -6,6 +6,14 @@
       <a class="tab" href="{{ path('home') }}#about">À PROPOS DE NOUS</a>
       <a class="tab {% if app.request.attributes.get('_route') == 'subscription' %}active{% endif %}" href="{{ path('subscription') }}">ABONNEMENT</a>
       <a class="tab" href="{{ path('home') }}#contact">CONTACT</a>
+
+      {# ------- Liens authentifiés ------- #}
+      {% if app.user %}
+        <a class="tab {{ app.request.pathinfo starts with '/mon-compte' ? 'active' : '' }}" href="/mon-compte">MON COMPTE</a>
+      {% else %}
+        {# Décommentez si vous avez une route de connexion #}
+        {# <a class="tab {{ app.request.attributes.get('_route') == 'app_login' ? 'active' : '' }}" href="{{ path('app_login') }}">SE CONNECTER</a> #}
+      {% endif %}
     </nav>
   </div>
 </header>
