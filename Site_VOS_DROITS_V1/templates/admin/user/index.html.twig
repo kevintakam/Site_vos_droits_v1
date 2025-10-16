@@ -71,6 +71,23 @@
         </ul>
       </nav>
 
+      {# ==============================
+         EXPORT DES UTILISATEURS
+         ============================== #}
+      <div class="mt-5 pt-3 border-top text-center">
+        <h5 class="fw-semibold mb-3 text-muted">Exporter la liste des utilisateurs</h5>
+        <div class="d-flex justify-content-center gap-3">
+          <a href="{{ path('admin_user_export_all', { format: 'csv' }) }}" 
+             class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-filetype-csv me-1"></i> Exporter CSV
+          </a>
+          <a href="{{ path('admin_user_export_all', { format: 'pdf' }) }}" 
+             class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-file-earmark-pdf me-1"></i> Exporter PDF
+          </a>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

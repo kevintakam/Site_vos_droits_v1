@@ -8,66 +8,84 @@
     <div class="col-12 col-xl-10">
 
       <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
-        <h1 class="h4 mb-0">Fiche utilisateur</h1>
+        <div>
+          <h1 class="h4 mb-1">Fiche utilisateur</h1>
+          <div class="text-muted small">
+            {% if user.createdAt is defined and user.createdAt %}
+              Créé le {{ user.createdAt|date('d/m/Y H:i') }}
+            {% else %}
+              Création : —
+            {% endif %}
+          </div>
+        </div>
         <div class="d-flex gap-2">
-          <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-outline-primary">Éditer</a>
-          <a href="{{ path('admin_user_index') }}" class="btn btn-outline-secondary">Retour</a>
+          <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-primary">
+            Éditer
+          </a>
+          <a href="{{ path('admin_user_index') }}" class="btn btn-outline-secondary">
+            Retour
+          </a>
         </div>
       </div>
 
       {% include 'admin/user/_flash.html.twig' ignore missing %}
 
       <div class="row g-3">
-        {# Carte — Informations générales #}
+        {# ======= Carte — Informations générales ======= #}
         <div class="col-12 col-lg-6">
-          <div class="card shadow-sm h-100">
-            <div class="card-header fw-semibold">Informations générales</div>
+          <div class="card shadow-sm h-100 border-0">
+            <div class="card-header bg-white border-0 pt-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="fw-semibold">Informations générales</span>
+                <span class="badge rounded-pill {{ user.isVerified ? 'text-bg-success' : 'text-bg-secondary' }}">
+                  {{ user.isVerified ? 'Vérifié' : 'Non vérifié' }}
+                </span>
+              </div>
+            </div>
             <div class="card-body">
-              <dl class="row mb-0">
-                <dt class="col-sm-5">Email</dt>
-                <dd class="col-sm-7"><a href="mailto:{{ user.email }}">{{ user.email }}</a></dd>
+              <div class="row gy-3">
+                <div class="col-12">
+                  <div class="d-flex justify-content-between">
+                    <span class="text-muted">Email</span>
+                    <span><a href="mailto:{{ user.email }}">{{ user.email }}</a></span>
+                  </div>
+                  <hr class="my-2">
+                </div>
 
-                <dt class="col-sm-5">Prénom</dt>
-                <dd class="col-sm-7">{{ user.firstname ?: '—' }}</dd>
+                <div class="col-6">
+                  <div class="text-muted">Prénom</div>
+                  <div class="fw-medium">{{ user.firstname ?: '—' }}</div>
+                </div>
+                <div class="col-6">
+                  <div class="text-muted">Nom</div>
+                  <div class="fw-medium">{{ user.lastname ?: '—' }}</div>
+                </div>
 
-                <dt class="col-sm-5">Nom</dt>
-                <dd class="col-sm-7">{{ user.lastname ?: '—' }}</dd>
+                <div class="col-12">
+                  <div class="text-muted">Téléphone</div>
+                  <div class="fw-medium">
+                    {% if user.phone %}
+                      <a href="tel:{{ user.phone }}">{{ user.phone }}</a>
+                    {% else %}—{% endif %}
+                  </div>
+                </div>
 
-                <dt class="col-sm-5">Téléphone</dt>
-                <dd class="col-sm-7">{{ user.phone ?: '—' }}</dd>
-
-                <dt class="col-sm-5">Vérifié</dt>
-                <dd class="col-sm-7">
-                  {% if user.isVerified %}
-                    <span class="badge text-bg-success">Oui</span>
-                  {% else %}
-                    <span class="badge text-bg-secondary">Non</span>
-                  {% endif %}
-                </dd>
-
-                <dt class="col-sm-5">Rôles</dt>
-                <dd class="col-sm-7">
-                  {% for r in user.roles %}
-                    <span class="badge text-bg-light border me-1">{{ r }}</span>
-                  {% else %}
-                    —
-                  {% endfor %}
-                </dd>
-
-                <dt class="col-sm-5">Créé le</dt>
-                <dd class="col-sm-7">
-                  {% if user.createdAt is defined and user.createdAt %}
-                    {{ user.createdAt|date('d/m/Y H:i') }}
-                  {% else %}
-                    —
-                  {% endif %}
-                </dd>
-              </dl>
+                <div class="col-12">
+                  <div class="text-muted">Rôles</div>
+                  <div>
+                    {% for r in user.roles %}
+                      <span class="badge text-bg-light border me-1">{{ r }}</span>
+                    {% else %}
+                      <span class="text-muted">—</span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {# Carte — Abonnement & Paiement #}
+        {# ======= Carte — Abonnement & Paiement ======= #}
         <div class="col-12 col-lg-6">
           {% set sub = user.subscriptionStatus ?? '' %}
           {% set subLabel = {
@@ -78,47 +96,44 @@
           }[sub]|default('Inconnu') %}
           {% set subColor = sub == 'active' ? 'success' : (sub == 'past_due' ? 'warning' : 'secondary') %}
 
-          <div class="card shadow-sm h-100">
-            <div class="card-header fw-semibold">Abonnement</div>
+          <div class="card shadow-sm h-100 border-0">
+            <div class="card-header bg-white border-0 pt-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="fw-semibold">Abonnement</span>
+                <span class="badge rounded-pill text-bg-{{ subColor }}">{{ subLabel }}</span>
+              </div>
+            </div>
             <div class="card-body">
-              <dl class="row mb-0">
-                <dt class="col-sm-5">Statut</dt>
-                <dd class="col-sm-7"><span class="badge text-bg-{{ subColor }}">{{ subLabel }}</span></dd>
-
-                <dt class="col-sm-5">Dernier paiement</dt>
-                <dd class="col-sm-7">
-                  {% if user.lastPaymentAt %}
-                    {{ user.lastPaymentAt|date('d/m/Y H:i') }}
-                  {% else %}
-                    —
-                  {% endif %}
-                </dd>
-
-                                <dt class="col-sm-5">Stripe Customer</dt>
-                <dd class="col-sm-7">
-                  {{ user.stripeCustomerId ?: '—' }}
-                </dd>
-
-                <dt class="col-sm-5">Stripe Subscription</dt>
-                <dd class="col-sm-7">
-                  {{ user.stripeSubscriptionId ?: '—' }}
-                </dd>
-              </dl>
+              <div class="row gy-3">
+                <div class="col-12">
+                  <div class="text-muted">Dernier paiement</div>
+                  <div class="fw-medium">
+                    {% if user.lastPaymentAt %}
+                      {{ user.lastPaymentAt|date('d/m/Y H:i') }}
+                    {% else %}—{% endif %}
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="text-muted">Stripe Customer</div>
+                  <div class="fw-medium">{{ user.stripeCustomerId ?: '—' }}</div>
+                </div>
+                <div class="col-12">
+                  <div class="text-muted">Stripe Subscription</div>
+                  <div class="fw-medium">{{ user.stripeSubscriptionId ?: '—' }}</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div> {# /row g-3 #}
 
-      {# =======================
-         Historique de paiement
-         ======================= #}
-      <div class="card shadow-sm mt-4">
-        <div class="card-header d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2">
+      {# ======= Historique de paiement ======= #}
+      <div class="card shadow-sm mt-4 border-0">
+        <div class="card-header bg-white border-0 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 pt-3">
           <span class="fw-semibold">Historique de paiement</span>
           <div class="d-flex gap-2">
-            {# Ces routes sont à implémenter côté contrôleur #}
-            <a href="{{ path('admin_user_payments_export', { id: user.id, format: 'xlsx' }) }}"
-               class="btn btn-sm btn-outline-success">Exporter Excel</a>
+            <a href="{{ path('admin_user_payments_export', { id: user.id, format: 'csv' }) }}"
+               class="btn btn-sm btn-success">Exporter Excel</a>
             <a href="{{ path('admin_user_payments_export', { id: user.id, format: 'pdf' }) }}"
                class="btn btn-sm btn-outline-danger">Exporter PDF</a>
           </div>
@@ -146,23 +161,16 @@
                 </thead>
                 <tbody>
                 {% for p in payments %}
-                  {# Hypothèses:
-                     p.id, p.paidAt|p.createdAt (DateTime), p.amount (en cents), p.currency,
-                     p.status, p.reference/invoiceNumber, p.invoiceUrl (optionnel)
-                  #}
                   {% set datePaid = p.paidAt is defined and p.paidAt ? p.paidAt : (p.createdAt is defined ? p.createdAt : null) %}
                   {% set amount  = (p.amount is defined ? (p.amount / 100) : 0) %}
                   {% set currency = (p.currency is defined ? p.currency|upper : 'EUR') %}
-
                   {% set statusColor = p.status == 'paid' ? 'success'
                     : (p.status in ['pending','requires_payment_method','processing'] ? 'warning'
                     : (p.status in ['failed','canceled'] ? 'danger' : 'secondary')) %}
 
                   <tr>
                     <td class="text-muted">{{ p.id }}</td>
-                    <td>
-                      {% if datePaid %}{{ datePaid|date('d/m/Y H:i') }}{% else %}—{% endif %}
-                    </td>
+                    <td>{% if datePaid %}{{ datePaid|date('d/m/Y H:i') }}{% else %}—{% endif %}</td>
                     <td>{{ amount|number_format(2, ',', ' ') }}&nbsp;{{ currency }}</td>
                     <td><span class="badge text-bg-{{ statusColor }}">{{ p.status|default('inconnu') }}</span></td>
                     <td>{{ p.reference is defined and p.reference ? p.reference : (p.invoiceNumber is defined ? p.invoiceNumber : '—') }}</td>
