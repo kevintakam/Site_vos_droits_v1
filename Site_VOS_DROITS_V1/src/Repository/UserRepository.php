@@ -20,7 +20,71 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
     /**
-     * Used to upgrade (rehash) the user's password automatically over time.
+     * Recherche paginée avec filtres texte, statut de compte et statut d'abonnement.
+     *
+     * $status accepte :
+     *   - Compte     : 'verified' | 'unverified' | 'admin' | 'user'
+     *   - Abonnement : 'active' | 'past_due' | 'canceled' | 'inactive'
+     *
+     * @param string|null $q      Terme de recherche (prénom/nom/email/téléphone)
+     * @param string|null $status Statut unique (compte OU abonnement)
+     * @param int         $page   Page 1..N
+     * @param int         $limit  Résultats par page (1..200)
+     * @return array{results: User[], total: int}
+     */
+    public function search(?string $q, ?string $status, int $page = 1, int $limit = 20): array
+    {
+        $page   = max(1, $page);
+        $limit  = max(1, min(200, $limit));
+        $offset = ($page - 1) * $limit;
+
+        $qb = $this->createQueryBuilder('u');
+
+        // --- Filtre texte ----------------------------------------------------
+        if ($q !== null && $q !== '') {
+            $qb->andWhere('u.firstname LIKE :q OR u.lastname LIKE :q OR u.email LIKE :q OR u.phone LIKE :q')
+               ->setParameter('q', '%'.$q.'%');
+        }
+
+        // --- Filtres "compte" -----------------------------------------------
+        if ($status === 'verified') {
+            $qb->andWhere('u.isVerified = :v')->setParameter('v', true);
+        } elseif ($status === 'unverified') {
+            $qb->andWhere('u.isVerified = :v')->setParameter('v', false);
+        } elseif ($status === 'admin') {
+            // JSON rôles stocké en texte -> LIKE compatible SQLite/MySQL
+            $qb->andWhere('u.roles LIKE :r')->setParameter('r', '%ROLE_ADMIN%');
+        } elseif ($status === 'user') {
+            $qb->andWhere('u.roles NOT LIKE :r')->setParameter('r', '%ROLE_ADMIN%');
+        }
+
+        // --- Filtres "abonnement" (Stripe-like) ------------------------------
+        // Propriété d'entité : subscriptionStatus (colonne subscription_status)
+        if (in_array($status, ['active', 'past_due', 'canceled'], true)) {
+            $qb->andWhere('u.subscriptionStatus = :subs')->setParameter('subs', $status);
+        } elseif ($status === 'inactive') {
+            // Interprétation par défaut : aucun statut stocké (NULL ou '')
+            $qb->andWhere('(u.subscriptionStatus IS NULL OR u.subscriptionStatus = \'\')');
+            // Si vous stockez explicitement "inactive", utilisez plutôt :
+            // $qb->andWhere('u.subscriptionStatus = :subs')->setParameter('subs', 'inactive');
+        }
+
+        // --- Tri / pagination ------------------------------------------------
+        $qb->orderBy('u.id', 'ASC');
+
+        $countQb = clone $qb;
+        $total = (int) $countQb->select('COUNT(u.id)')->getQuery()->getSingleScalarResult();
+
+        $results = $qb->setFirstResult($offset)
+                      ->setMaxResults($limit)
+                      ->getQuery()
+                      ->getResult();
+
+        return ['results' => $results, 'total' => $total];
+    }
+
+    /**
+     * Rehash automatique du mot de passe au fil du temps.
      */
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
@@ -32,29 +96,4 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
-
-    //    /**
-    //     * @return User[] Returns an array of User objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('u.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?User
-    //    {
-    //        return $this->createQueryBuilder('u')
-    //            ->andWhere('u.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
