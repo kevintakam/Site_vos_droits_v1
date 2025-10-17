@@ -9,10 +9,39 @@
   <link rel="stylesheet" href="{{ asset('assets/styles/app.css') }}">
   {% block styles %}{% endblock %}
 </head>
+
 <body>
+  {# =============================
+     NAVIGATION PRINCIPALE
+     ============================= #}
   {% include '_partials/_navbar.html.twig' %}
-  <main id="content">{% block body %}{% endblock %}</main>
+
+  {# =============================
+     BOUTON ADMIN (visible uniquement pour ROLE_ADMIN)
+     ============================= #}
+  {% if is_granted('ROLE_ADMIN') %}
+    <div class="container mt-3 mb-2 text-end">
+      <a href="{{ path('admin_user_index') }}" 
+         class="btn btn-sm btn-primary shadow-sm px-3"
+         style="font-weight: 500; letter-spacing: 0.3px;">
+        <i class="bi bi-people-fill me-1"></i>
+        Gestion des utilisateurs
+      </a>
+    </div>
+  {% endif %}
+
+  {# =============================
+     CONTENU PRINCIPAL
+     ============================= #}
+  <main id="content">
+    {% block body %}{% endblock %}
+  </main>
+
+  {# =============================
+     PIED DE PAGE
+     ============================= #}
   {% include '_partials/footer.html.twig' %}
+
   {% block scripts %}{% endblock %}
 </body>
 </html>

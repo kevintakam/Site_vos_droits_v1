@@ -1,4 +1,7 @@
 framework:
   mailer:
-    dsn: "%env(MAILER_DSN)%"
-    message_bus: false
+    dsn: '%env(MAILER_DSN)%'
+    envelope:
+      sender: '%env(APP_FROM_EMAIL)%'   # adresse utilisée pour l’envoi SMTP
+    headers:
+      From: '%env(APP_FROM_NAME)% <%env(APP_FROM_EMAIL)%>'

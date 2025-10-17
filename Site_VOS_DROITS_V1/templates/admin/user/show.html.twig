@@ -1,0 +1,196 @@
+{# templates/admin/user/show.html.twig #}
+{% extends 'base.html.twig' %}
+{% block title %}Utilisateur — {{ user.email }}{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-10">
+
+      <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+        <div>
+          <h1 class="h4 mb-1">Fiche utilisateur</h1>
+          <div class="text-muted small">
+            {% if user.createdAt is defined and user.createdAt %}
+              Créé le {{ user.createdAt|date('d/m/Y H:i') }}
+            {% else %}
+              Création : —
+            {% endif %}
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="{{ path('admin_user_edit', {id: user.id}) }}" class="btn btn-primary">
+            Éditer
+          </a>
+          <a href="{{ path('admin_user_index') }}" class="btn btn-outline-secondary">
+            Retour
+          </a>
+        </div>
+      </div>
+
+      {% include 'admin/user/_flash.html.twig' ignore missing %}
+
+      <div class="row g-3">
+        {# ======= Carte — Informations générales ======= #}
+        <div class="col-12 col-lg-6">
+          <div class="card shadow-sm h-100 border-0">
+            <div class="card-header bg-white border-0 pt-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="fw-semibold">Informations générales</span>
+                <span class="badge rounded-pill {{ user.isVerified ? 'text-bg-success' : 'text-bg-secondary' }}">
+                  {{ user.isVerified ? 'Vérifié' : 'Non vérifié' }}
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row gy-3">
+                <div class="col-12">
+                  <div class="d-flex justify-content-between">
+                    <span class="text-muted">Email</span>
+                    <span><a href="mailto:{{ user.email }}">{{ user.email }}</a></span>
+                  </div>
+                  <hr class="my-2">
+                </div>
+
+                <div class="col-6">
+                  <div class="text-muted">Prénom</div>
+                  <div class="fw-medium">{{ user.firstname ?: '—' }}</div>
+                </div>
+                <div class="col-6">
+                  <div class="text-muted">Nom</div>
+                  <div class="fw-medium">{{ user.lastname ?: '—' }}</div>
+                </div>
+
+                <div class="col-12">
+                  <div class="text-muted">Téléphone</div>
+                  <div class="fw-medium">
+                    {% if user.phone %}
+                      <a href="tel:{{ user.phone }}">{{ user.phone }}</a>
+                    {% else %}—{% endif %}
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <div class="text-muted">Rôles</div>
+                  <div>
+                    {% for r in user.roles %}
+                      <span class="badge text-bg-light border me-1">{{ r }}</span>
+                    {% else %}
+                      <span class="text-muted">—</span>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {# ======= Carte — Abonnement & Paiement ======= #}
+        <div class="col-12 col-lg-6">
+          {% set sub = user.subscriptionStatus ?? '' %}
+          {% set subLabel = {
+            'active':'Payé (actif)',
+            'past_due':'En retard',
+            'canceled':'Annulé',
+            'inactive':'Inactif'
+          }[sub]|default('Inconnu') %}
+          {% set subColor = sub == 'active' ? 'success' : (sub == 'past_due' ? 'warning' : 'secondary') %}
+
+          <div class="card shadow-sm h-100 border-0">
+            <div class="card-header bg-white border-0 pt-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="fw-semibold">Abonnement</span>
+                <span class="badge rounded-pill text-bg-{{ subColor }}">{{ subLabel }}</span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row gy-3">
+                <div class="col-12">
+                  <div class="text-muted">Dernier paiement</div>
+                  <div class="fw-medium">
+                    {% if user.lastPaymentAt %}
+                      {{ user.lastPaymentAt|date('d/m/Y H:i') }}
+                    {% else %}—{% endif %}
+                  </div>
+                </div>
+                <div class="col-12">
+                  <div class="text-muted">Stripe Customer</div>
+                  <div class="fw-medium">{{ user.stripeCustomerId ?: '—' }}</div>
+                </div>
+                <div class="col-12">
+                  <div class="text-muted">Stripe Subscription</div>
+                  <div class="fw-medium">{{ user.stripeSubscriptionId ?: '—' }}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> {# /row g-3 #}
+
+      {# ======= Historique de paiement ======= #}
+      <div class="card shadow-sm mt-4 border-0">
+        <div class="card-header bg-white border-0 d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-2 pt-3">
+          <span class="fw-semibold">Historique de paiement</span>
+          <div class="d-flex gap-2">
+            <a href="{{ path('admin_user_payments_export', { id: user.id, format: 'csv' }) }}"
+               class="btn btn-sm btn-success">Exporter Excel</a>
+            <a href="{{ path('admin_user_payments_export', { id: user.id, format: 'pdf' }) }}"
+               class="btn btn-sm btn-outline-danger">Exporter PDF</a>
+          </div>
+        </div>
+
+        <div class="card-body p-0">
+          {% set payments = payments is defined ? payments : [] %}
+
+          {% if payments is empty %}
+            <div class="p-4 text-center text-muted">
+              Aucun paiement trouvé pour cet utilisateur.
+            </div>
+          {% else %}
+            <div class="table-responsive">
+              <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                  <tr>
+                    <th style="width: 80px;">#</th>
+                    <th>Date</th>
+                    <th>Montant</th>
+                    <th>Statut</th>
+                    <th>Référence</th>
+                    <th class="text-end" style="width: 160px;">Justificatif</th>
+                  </tr>
+                </thead>
+                <tbody>
+                {% for p in payments %}
+                  {% set datePaid = p.paidAt is defined and p.paidAt ? p.paidAt : (p.createdAt is defined ? p.createdAt : null) %}
+                  {% set amount  = (p.amount is defined ? (p.amount / 100) : 0) %}
+                  {% set currency = (p.currency is defined ? p.currency|upper : 'EUR') %}
+                  {% set statusColor = p.status == 'paid' ? 'success'
+                    : (p.status in ['pending','requires_payment_method','processing'] ? 'warning'
+                    : (p.status in ['failed','canceled'] ? 'danger' : 'secondary')) %}
+
+                  <tr>
+                    <td class="text-muted">{{ p.id }}</td>
+                    <td>{% if datePaid %}{{ datePaid|date('d/m/Y H:i') }}{% else %}—{% endif %}</td>
+                    <td>{{ amount|number_format(2, ',', ' ') }}&nbsp;{{ currency }}</td>
+                    <td><span class="badge text-bg-{{ statusColor }}">{{ p.status|default('inconnu') }}</span></td>
+                    <td>{{ p.reference is defined and p.reference ? p.reference : (p.invoiceNumber is defined ? p.invoiceNumber : '—') }}</td>
+                    <td class="text-end">
+                      {% if p.invoiceUrl is defined and p.invoiceUrl %}
+                        <a href="{{ p.invoiceUrl }}" target="_blank" rel="noopener" class="btn btn-sm btn-outline-secondary">Voir la facture</a>
+                      {% else %}
+                        <span class="text-muted">—</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

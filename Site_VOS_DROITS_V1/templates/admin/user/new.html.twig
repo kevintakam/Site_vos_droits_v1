@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+{% block title %}Nouvel utilisateur — Administration{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8 col-xl-7">
+
+      <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 mb-0">Créer un utilisateur</h1>
+        <a class="btn btn-outline-secondary" href="{{ path('admin_user_index') }}">Retour</a>
+      </div>
+
+      {% include 'admin/user/_flash.html.twig' ignore missing %}
+
+      {% include 'admin/user/_form.html.twig' with { form: form, submit_label: 'Créer' } only %}
+
+    </div>
+  </div>
+</div>
+{% endblock %}

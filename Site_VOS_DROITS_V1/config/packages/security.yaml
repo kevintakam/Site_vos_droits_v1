@@ -35,6 +35,7 @@ security:
     - { path: ^/abonnement/checkout, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/abonnement/portal, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/mon-compte, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
   security:

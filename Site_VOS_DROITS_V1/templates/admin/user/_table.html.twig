@@ -1,0 +1,71 @@
+{# templates/admin/user/_table.html.twig #}
+<div class="table-responsive">
+  <table class="table table-hover align-middle">
+    <thead class="table-light">
+      <tr>
+        <th style="width:60px;">#</th>
+        <th>Nom</th>
+        <th>Prénom</th>
+        <th>Email</th>
+        <th>Rôles</th>
+        <th>Vérifié</th>
+        <th>Paiement</th>
+        <th class="text-end" style="width: 220px;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for u in users %}
+      {% set sub = u.subscriptionStatus ?? '' %}
+      {% set payBadge = {
+        'active':    {'class':'success','text':'Payé (actif)'},
+        'past_due':  {'class':'warning','text':'En retard'},
+        'canceled':  {'class':'secondary','text':'Annulé'},
+        'inactive':  {'class':'secondary','text':'Inactif'}
+      }[sub]|default(null) %}
+      {% if payBadge is null and u.lastPaymentAt is defined and u.lastPaymentAt %}
+        {% set payBadge = {'class':'success','text':'Payé'} %}
+      {% endif %}
+
+      <tr>
+        <td class="text-muted">{{ u.id }}</td>
+        <td>{{ u.lastname }}</td>
+        <td>{{ u.firstname }}</td>
+        <td><a href="mailto:{{ u.email }}" class="text-decoration-none">{{ u.email }}</a></td>
+        <td>
+          {% for r in u.roles %}
+            <span class="badge text-bg-light border me-1">{{ r }}</span>
+          {% endfor %}
+        </td>
+        <td>
+          {% if u.isVerified %}
+            <span class="badge text-bg-success">Oui</span>
+          {% else %}
+            <span class="badge text-bg-secondary">Non</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if payBadge %}
+            <span class="badge text-bg-{{ payBadge.class }}">{{ payBadge.text }}</span>
+            {% if sub == 'active' and u.lastPaymentAt is defined and u.lastPaymentAt %}
+              <small class="text-muted d-block">Dernier paiement : {{ u.lastPaymentAt|date('d/m/Y') }}</small>
+            {% endif %}
+          {% else %}
+            <span class="badge text-bg-secondary">Inconnu</span>
+          {% endif %}
+        </td>
+        <td class="text-end text-nowrap">
+          <a href="{{ path('admin_user_show', {'id': u.id}) }}" class="btn btn-sm btn-outline-secondary">Voir</a>
+          <a href="{{ path('admin_user_edit', {'id': u.id}) }}" class="btn btn-sm btn-outline-primary">Éditer</a>
+
+          <form action="{{ path('admin_user_delete', {'id': u.id}) }}"
+                method="post" class="d-inline"
+                onsubmit="return confirm('Supprimer cet utilisateur ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete_user_' ~ u.id) }}">
+            <button type="submit" class="btn btn-sm btn-danger">Supprimer</button>
+          </form>
+        </td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+</div>
