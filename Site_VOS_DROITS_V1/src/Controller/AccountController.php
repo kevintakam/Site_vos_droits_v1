@@ -102,9 +102,5 @@ final class AccountController extends AbstractController
             'stripe'        => $stripe,
         ]);
     }
-        #[Route('/verification', name: 'account_verify_notice', methods: ['GET'])]
-        public function verifyNotice(): Response
-        {
-            return $this->render('account/verify_notice.html.twig');
-        }
+
 }

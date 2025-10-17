@@ -150,11 +150,6 @@ class Subscription
     // Helper methods
     // ---------------
 
-    /**
-     * Abonnement considéré "actif" fonctionnellement :
-     * - status dans [active, past_due]
-     * - ET currentPeriodEnd futur.
-     */
     public function isActive(): bool
     {
         if (!$this->currentPeriodEnd) {

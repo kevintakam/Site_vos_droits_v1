@@ -93,7 +93,6 @@ final class StripeWebhookController extends AbstractController
                                     ? new \DateTimeImmutable('@'.$sub->current_period_end)
                                     : (new \DateTimeImmutable('now'))->modify('+1 month')
                             );
-
                         try {
                             $em->persist($entity);
                             $em->flush();

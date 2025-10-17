@@ -42,7 +42,7 @@ public function checkout(
     }
     if (!$user->isVerified()) {
         $this->addFlash('error', 'Veuillez vérifier votre adresse e-mail avant de souscrire.');
-        return $this->redirectToRoute('account_verify_notice'); // page d’info vérification
+        return $this->redirectToRoute('account_verify_notice'); 
     }
 
     \Stripe\Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
