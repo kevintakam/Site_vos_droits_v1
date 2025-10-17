@@ -6,50 +6,34 @@ services:
       - "8080:80"
     working_dir: /var/www/html
     environment:
-      APP_ENV: ${APP_ENV:-dev}
-      APP_SECRET: ${APP_SECRET:-change_me}
-      APP_URL: ${APP_URL:-http://localhost:8080}
-      DATABASE_URL: mysql://symfony:${MYSQL_PASSWORD:-symfony}@db:3306/${MYSQL_DATABASE:-bd_droits_juridiques}?serverVersion=8.0&charset=utf8mb4
-      # MAILER_DSN: ${MAILER_DSN:-}
-      APP_FROM_EMAIL: ${APP_FROM_EMAIL:-}
-      APP_FROM_NAME: ${APP_FROM_NAME:-}
+      APP_ENV: dev
+      APP_DEBUG: "1"
+      APP_SECRET: change_me
+      DATABASE_URL: "mysql://symfony:symfony@db:3306/bd_droits_juridiques?serverVersion=8.0&charset=utf8mb4"
+      MAILER_DSN: "null://null"
+      COMPOSER_MEMORY_LIMIT: "-1"
+      COMPOSER_ALLOW_SUPERUSER: "1"
     volumes:
       - ./:/var/www/html
-      - ./docker/apache.conf:/etc/apache2/sites-available/000-default.conf:ro
-      - ./docker/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
     depends_on:
       - db
+    command: >
+      bash -lc "
+      if [ ! -f vendor/autoload.php ]; then
+        composer install --no-dev --prefer-dist --no-interaction --no-progress || exit 1;
+      fi
+      && php bin/console cache:clear || true
+      && apache2-foreground
+      "
 
   db:
     image: mysql:8.0
     container_name: app-db
+    restart: always
     environment:
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-bd_droits_juridiques}
-      MYSQL_USER: ${MYSQL_USER:-symfony}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-symfony}
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: bd_droits_juridiques
+      MYSQL_USER: symfony
+      MYSQL_PASSWORD: symfony
+      MYSQL_ROOT_PASSWORD: root
     ports:
       - "3307:3306"
-    volumes:
-      - db_data:/var/lib/mysql
-
-###> doctrine/doctrine-bundle ###
-  database:
-    image: postgres:${POSTGRES_VERSION:-16}-alpine
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-app}
-      # You should definitely change the password in production
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-!ChangeMe!}
-      POSTGRES_USER: ${POSTGRES_USER:-app}
-    volumes:
-      - database_data:/var/lib/postgresql/data:rw
-      # You may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
-      # - ./docker/db/data:/var/lib/postgresql/data:rw
-###< doctrine/doctrine-bundle ###
-
-volumes:
-  db_data:
-
-###> doctrine/doctrine-bundle ###
-  database_data:
-###< doctrine/doctrine-bundle ###

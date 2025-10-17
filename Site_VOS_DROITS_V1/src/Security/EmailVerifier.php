@@ -17,7 +17,6 @@ final class EmailVerifier
         private readonly VerifyEmailHelperInterface $helper,
         private readonly MailerInterface $mailer,
         private readonly UrlGeneratorInterface $urlGenerator,
-        // Injectés depuis services.yaml (bind)
         private readonly string $fromEmail,
         private readonly string $fromName,
     ) {}
@@ -38,20 +37,21 @@ final class EmailVerifier
 
         $signature = $this->helper->generateSignature(
             $routeName,
-            (string) $userId,             // 2e argument attendu: string
+            (string) $userId,      
             (string) $user->getEmail(),
-            ['id' => (string) $userId]    // param route si nécessaire
+            ['id' => (string) $userId]    
         );
 
         $email = (new TemplatedEmail())
             ->from(new Address($this->fromEmail, $this->fromName))
             ->to(new Address($user->getEmail()))
             ->subject('Vérifie ton adresse email')
-            ->htmlTemplate('security/verify_email.html.twig')   // adaptez le chemin si besoin
+            ->htmlTemplate('security/verify_email.html.twig')  
             ->context([
                 'user'      => $user,
                 'signedUrl' => $signature->getSignedUrl(),
-                'expiresAt' => $signature->getExpiresAt(),
+                'expiresAtMessageKey'    => $signature->getExpirationMessageKey(),
+                'expiresAtMessageData'   => $signature->getExpirationMessageData(),
             ]);
 
         $this->mailer->send($email);
@@ -62,7 +62,12 @@ final class EmailVerifier
      */
     public function handleEmailConfirmation(User $user, string $fullUri): void
     {
-        $this->helper->validateEmailConfirmation($fullUri, $user->getId(), $user->getEmail());
+            $this->helper->validateEmailConfirmation(
+            $fullUri,
+            (string) $user->getId(),
+            (string) $user->getEmail()
+        );
+
 
         if (method_exists($user, 'setIsVerified')) {
             $user->setIsVerified(true);

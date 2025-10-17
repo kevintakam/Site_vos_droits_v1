@@ -38,6 +38,10 @@ security:
     - { path: ^/abonnement/portal, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/mon-compte, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/admin, roles: ROLE_ADMIN }
+    - { path: ^/verify/email, roles: PUBLIC_ACCESS }
+    - { path: ^/verify/resend, roles: PUBLIC_ACCESS }
+    - { path: ^/verification, roles: PUBLIC_ACCESS }
+    - { path: ^/register, roles: PUBLIC_ACCESS }
 
 when@test:
   security:
