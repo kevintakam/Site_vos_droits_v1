@@ -32,6 +32,7 @@
         {% if hasActiveSubscription %}
         <a class="btn btn-outline is-disabled" aria-disabled="true" tabindex="-1">Abonné — {{ subscription.currentPeriodEnd ? ('jusqu’au ' ~ subscription.currentPeriodEnd|date('d/m/Y')) : 'actif' }}</a>
         <a href="{{ path('account') }}" class="btn btn-primary">Mon compte</a>
+        
         {% else %}
         <a href="{{ path('account') }}" class="btn btn-primary">Mon compte</a>
         <form method="post" action="{{ path('subscription_checkout') }}" style="display:inline">

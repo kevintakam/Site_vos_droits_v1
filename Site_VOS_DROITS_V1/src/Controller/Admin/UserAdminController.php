@@ -21,7 +21,7 @@ final class UserAdminController extends AbstractController
         private EntityManagerInterface $em
     ) {}
 
-    #[Route('', name: 'index', methods: ['GET'])]
+    #[Route('/', name: 'index', methods: ['GET'])]
     public function index(Request $request, UserRepository $repo): Response
     {
         $this->denyAccessUnlessGranted('ROLE_ADMIN');

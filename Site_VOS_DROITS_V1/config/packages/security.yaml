@@ -22,6 +22,8 @@ security:
       logout:
         path: app_logout
         target: home
+        csrf_token_generator: security.csrf.token_manager
+        csrf_token_id: logout # identifiant du token (doit matcher le Twig ci-dessous)
 
       # activate different ways to authenticate
       # https://symfony.com/doc/current/security.html#the-firewall

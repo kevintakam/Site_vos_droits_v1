@@ -3,7 +3,6 @@
 
 {% block body %}
 <h1>Mon compte</h1>
-
 {% for label, messages in app.flashes %}
   {% for message in messages %}
     <div class="alert alert-{{ label }}">{{ message|raw }}</div>
@@ -25,6 +24,14 @@
   <div>
     <h2>
       Mon abonnement
+    {% if app.user %}
+      <hr class="my-3">
+      <form action="{{ path('app_logout') }}" method="post" class="d-inline">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+        <button type="submit" class="btn btn-outline-danger btn-sm">Se déconnecter</button>
+      </form>
+    {% endif %}
+
       {% if hasActive %}
         <span class="badge bg-success">Actif</span>
       {% elseif subscription %}
