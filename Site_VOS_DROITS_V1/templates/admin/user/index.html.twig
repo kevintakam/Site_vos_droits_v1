@@ -1,0 +1,94 @@
+{# templates/admin/user/index.html.twig #}
+{% extends 'base.html.twig' %}
+{% block title %}Administration — Utilisateurs{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-10 col-xl-9">
+
+      <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-4 gap-3">
+        <h1 class="h3 mb-0">Utilisateurs <span class="text-muted">({{ total }})</span></h1>
+        <div class="d-flex gap-2">
+          <a href="{{ path('admin_user_new') }}" class="btn btn-primary">+ Nouvel utilisateur</a>
+        </div>
+      </div>
+
+      {% include 'admin/user/_flash.html.twig' ignore missing %}
+
+      {# Filtres #}
+      <form method="get" class="row g-2 align-items-end mb-3">
+        <div class="col-12 col-md-6 col-lg-5">
+          <label class="form-label fw-semibold">Recherche</label>
+          <input type="search"
+                 name="q"
+                 value="{{ app.request.get('q')|default('') }}"
+                 class="form-control"
+                 placeholder="Prénom, nom, email, téléphone…">
+        </div>
+        <div class="col-12 col-md-4 col-lg-4">
+          <label class="form-label fw-semibold">Statut</label>
+          {% set current = app.request.get('status')|default('') %}
+          <select name="status" class="form-select">
+            <option value="">— Tous les statuts —</option>
+            <optgroup label="Compte">
+              <option value="verified"   {{ current == 'verified'   ? 'selected' }}>Vérifiés</option>
+              <option value="unverified" {{ current == 'unverified' ? 'selected' }}>Non vérifiés</option>
+              <option value="admin"      {{ current == 'admin'      ? 'selected' }}>Admins</option>
+              <option value="user"       {{ current == 'user'       ? 'selected' }}>Non-admins</option>
+            </optgroup>
+            <optgroup label="Abonnement">
+              <option value="active"     {{ current == 'active'     ? 'selected' }}>Actif</option>
+              <option value="past_due"   {{ current == 'past_due'   ? 'selected' }}>En retard</option>
+              <option value="canceled"   {{ current == 'canceled'   ? 'selected' }}>Annulé</option>
+              <option value="inactive"   {{ current == 'inactive'   ? 'selected' }}>Inactif</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="col-12 col-md-2 col-lg-3 d-grid">
+          <button class="btn btn-outline-secondary">Filtrer</button>
+        </div>
+      </form>
+
+      {% if users is empty %}
+        <div class="text-center text-muted border rounded py-5">
+          <div class="mb-2">Aucun utilisateur ne correspond à votre filtre.</div>
+          <a href="{{ path('admin_user_index') }}" class="btn btn-sm btn-outline-secondary">Réinitialiser</a>
+        </div>
+      {% else %}
+        {% include 'admin/user/_table.html.twig' with { users: users } only %}
+      {% endif %}
+
+      <nav class="mt-3 d-flex justify-content-center">
+        <ul class="pagination mb-0">
+          <li class="page-item {{ page <= 1 ? 'disabled' }}">
+            <a class="page-link" href="{{ path('admin_user_index', {'page': page-1, 'q': app.request.get('q'), 'status': current}) }}">« Précédent</a>
+          </li>
+          <li class="page-item disabled"><span class="page-link">Page {{ page }} / {{ pages }}</span></li>
+          <li class="page-item {{ page >= pages ? 'disabled' }}">
+            <a class="page-link" href="{{ path('admin_user_index', {'page': page+1, 'q': app.request.get('q'), 'status': current}) }}">Suivant »</a>
+          </li>
+        </ul>
+      </nav>
+
+      {# ==============================
+         EXPORT DES UTILISATEURS
+         ============================== #}
+      <div class="mt-5 pt-3 border-top text-center">
+        <h5 class="fw-semibold mb-3 text-muted">Exporter la liste des utilisateurs</h5>
+        <div class="d-flex justify-content-center gap-3">
+          <a href="{{ path('admin_user_export_all', { format: 'csv' }) }}" 
+             class="btn btn-outline-primary btn-sm">
+            <i class="bi bi-filetype-csv me-1"></i> Exporter CSV
+          </a>
+          <a href="{{ path('admin_user_export_all', { format: 'pdf' }) }}" 
+             class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-file-earmark-pdf me-1"></i> Exporter PDF
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

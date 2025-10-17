@@ -2,11 +2,12 @@
 {% block title %}Mon compte{% endblock %}
 
 {% block body %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-12 col-lg-10">
-
-      <h1 class="text-center mb-5 fw-bold">Mon compte</h1>
+<h1>Mon compte</h1>
+{% for label, messages in app.flashes %}
+  {% for message in messages %}
+    <div class="alert alert-{{ label }}">{{ message|raw }}</div>
+  {% endfor %}
+{% endfor %}
 
       {% for label, messages in app.flashes %}
         {% for message in messages %}
@@ -14,17 +15,25 @@
         {% endfor %}
       {% endfor %}
 
-      <section class="account-grid d-grid gap-4" style="display:grid;grid-template-columns:1fr 1fr;gap:2rem;">
-        <div class="card shadow-sm border-0 p-4">
-          <h2 class="h5 mb-3 fw-semibold text-primary">Mes informations</h2>
-          {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-            {{ form_row(form.firstname) }}
-            {{ form_row(form.lastname) }}
-            {{ form_row(form.email) }}
-            {{ form_row(form.phone) }}
-            <button class="btn btn-primary mt-3 w-100">Enregistrer</button>
-          {{ form_end(form) }}
-        </div>
+  <div>
+    <h2>
+      Mon abonnement
+    {% if app.user %}
+      <hr class="my-3">
+      <form action="{{ path('app_logout') }}" method="post" class="d-inline">
+        <input type="hidden" name="_csrf_token" value="{{ csrf_token('logout') }}">
+        <button type="submit" class="btn btn-outline-danger btn-sm">Se déconnecter</button>
+      </form>
+    {% endif %}
+
+      {% if hasActive %}
+        <span class="badge bg-success">Actif</span>
+      {% elseif subscription %}
+        <span class="badge bg-warning text-dark">Inactif</span>
+      {% else %}
+        <span class="badge bg-secondary">Aucun</span>
+      {% endif %}
+    </h2>
 
         <div class="card shadow-sm border-0 p-4">
           <h2 class="h5 mb-3 fw-semibold text-primary">Mon abonnement

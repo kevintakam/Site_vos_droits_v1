@@ -22,6 +22,8 @@ security:
       logout:
         path: app_logout
         target: home
+        csrf_token_generator: security.csrf.token_manager
+        csrf_token_id: logout # identifiant du token (doit matcher le Twig ci-dessous)
 
       # activate different ways to authenticate
       # https://symfony.com/doc/current/security.html#the-firewall
@@ -35,6 +37,7 @@ security:
     - { path: ^/abonnement/checkout, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/abonnement/portal, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/mon-compte, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
   security:

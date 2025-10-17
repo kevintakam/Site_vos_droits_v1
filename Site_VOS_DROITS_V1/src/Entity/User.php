@@ -13,38 +13,52 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column]
+    
+     #[ORM\Column(type: 'json')] 
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $firstname = null;
 
-    #[ORM\Column(length: 255)]
+   #[ORM\Column(type: 'string', length: 255)]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private ?string $phone = null;
 
-    #[ORM\Column]
+   #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private ?bool $isVerified = false;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $stripeCustomerId = null;
+
+    /* === AJOUTS Nécessaires pour l’admin abonnement === */
+
+    // Statut d’abonnement: 'active' | 'inactive' | 'past_due' | 'canceled'
+    #[ORM\Column(length: 20, options: ['default' => 'inactive'])]
+    private string $subscriptionStatus = 'inactive';
+
+    // Dernière date de paiement confirmé (UTC)
+   #[ORM\Column(type: 'datetime_immutable', nullable: true)]
+    private ?\DateTimeInterface $lastPaymentAt = null;
+
+    // Identifiant d’abonnement Stripe (si présent)
+     #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private ?string $stripeSubscriptionId = null;
+
+    /* ================================================== */
 
     public function getId(): ?int
     {
@@ -167,4 +181,38 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function getStripeCustomerId(): ?string { return $this->stripeCustomerId; }
     public function setStripeCustomerId(?string $v): self { $this->stripeCustomerId = $v; return $this; }
 
+    /* === Getters/Setters ajoutés === */
+
+    public function getSubscriptionStatus(): string
+    {
+        return $this->subscriptionStatus;
+    }
+
+    public function setSubscriptionStatus(string $status): self
+    {
+        $this->subscriptionStatus = $status;
+        return $this;
+    }
+
+    public function getLastPaymentAt(): ?\DateTimeInterface
+    {
+        return $this->lastPaymentAt;
+    }
+
+    public function setLastPaymentAt(?\DateTimeInterface $dt): self
+    {
+        $this->lastPaymentAt = $dt;
+        return $this;
+    }
+
+    public function getStripeSubscriptionId(): ?string
+    {
+        return $this->stripeSubscriptionId;
+    }
+
+    public function setStripeSubscriptionId(?string $id): self
+    {
+        $this->stripeSubscriptionId = $id;
+        return $this;
+    }
 }

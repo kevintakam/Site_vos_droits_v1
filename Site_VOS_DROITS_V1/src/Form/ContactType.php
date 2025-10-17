@@ -35,7 +35,7 @@ final class ContactType extends AbstractType
         'attr' => ['rows' => 6],
     ])
     ->add('is_accepted_cgu', CheckboxType::class, [
-        'property_path' => 'isAcceptedCGU',   // ✅ mapping vers la propriété
+        'property_path' => 'isAcceptedCGU',  
         'label' => 'J’accepte les CGU', 'required' => true,
         'row_attr' => ['class' => 'field checkbox required'],
     ]);
