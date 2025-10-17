@@ -171,9 +171,6 @@ a {
 }
 
 
-.btn-outline:hover {
-    background: #f7ecea
-}
 
 /* ===== Intro « card » élégante ===== */
 .intro {
@@ -989,7 +986,7 @@ a {
 }
 
 .btn-outline:hover {
-    background: #e7f0fb;
+    background: #042f64;
 }
 
 .btn-block {
@@ -1128,9 +1125,7 @@ form textarea:focus {
 
 
 
-.btn-outline:hover {
-    background: #e7f0fb;
-}
+
 
 .btn-block {
     width: 100%;
