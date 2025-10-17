@@ -13,34 +13,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180)]
+    #[ORM\Column(type: 'string', length: 180, unique: true)]
     private ?string $email = null;
 
-    /**
-     * @var list<string> The user roles
-     */
-    #[ORM\Column]
+    
+     #[ORM\Column(type: 'json')] 
     private array $roles = [];
 
     /**
      * @var string The hashed password
      */
-    #[ORM\Column]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $password = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'string', length: 255)]
     private ?string $firstname = null;
 
-    #[ORM\Column(length: 255)]
+   #[ORM\Column(type: 'string', length: 255)]
     private ?string $lastname = null;
 
-    #[ORM\Column(length: 20, nullable: true)]
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
     private ?string $phone = null;
 
-    #[ORM\Column]
+   #[ORM\Column(type: 'boolean', options: ['default' => false])]
     private ?bool $isVerified = false;
 
     #[ORM\Column(length: 255, nullable: true)]
@@ -53,11 +51,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $subscriptionStatus = 'inactive';
 
     // Dernière date de paiement confirmé (UTC)
-    #[ORM\Column(type: 'datetime', nullable: true)]
+   #[ORM\Column(type: 'datetime_immutable', nullable: true)]
     private ?\DateTimeInterface $lastPaymentAt = null;
 
     // Identifiant d’abonnement Stripe (si présent)
-    #[ORM\Column(length: 100, nullable: true)]
+     #[ORM\Column(type: 'string', length: 100, nullable: true)]
     private ?string $stripeSubscriptionId = null;
 
     /* ================================================== */
