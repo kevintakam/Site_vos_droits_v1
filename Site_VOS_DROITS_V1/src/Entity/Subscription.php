@@ -43,7 +43,7 @@ class Subscription
     public function getCurrentPeriodEnd(): ?\DateTimeImmutable { return $this->currentPeriodEnd; }
     public function setCurrentPeriodEnd(?\DateTimeImmutable $d): self { $this->currentPeriodEnd = $d; return $this; }
 
-       public function isActive(): bool
+    public function isActive(): bool
     {
         if (!$this->currentPeriodEnd) {
             return false;

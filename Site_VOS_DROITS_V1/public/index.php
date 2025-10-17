@@ -1,30 +1,28 @@
 <?php
-declare(strict_types=1);
-
-use App\Kernel;
-use Symfony\Component\ErrorHandler\Debug;
-use Symfony\Component\HttpFoundation\Request;
-
-require_once dirname(__DIR__).'/vendor/autoload.php';
-
-// Lire l'env le plus tôt possible (évite toute lecture de .env)
-$env   = $_SERVER['APP_ENV']   ?? $_ENV['APP_ENV']   ?? getenv('APP_ENV')   ?: 'prod';
-$debug = $_SERVER['APP_DEBUG'] ?? $_ENV['APP_DEBUG'] ?? getenv('APP_DEBUG');
-$debug = filter_var($debug, FILTER_VALIDATE_BOOL) ?: false;
-
-// Rendre visibles pour le Kernel
-$_SERVER['APP_ENV']   = $_ENV['APP_ENV']   = $env;
-$_SERVER['APP_DEBUG'] = $_ENV['APP_DEBUG'] = $debug ? '1' : '0';
-
-// Debug en local seulement
-if ($debug) {
-    umask(0000);
-    Debug::enable();
+// --- Shim: propage les variables d'environnement vers $_SERVER/$_ENV et putenv ---
+// -> Empêche SymfonyRuntime de tenter Dotenv::bootEnv() (et donc .env) en prod.
+$keys = ['APP_ENV' => 'prod', 'APP_DEBUG' => '0'];
+foreach ($keys as $key => $default) {
+    $val = getenv($key);
+    if ($val === false || $val === null || $val === '') {
+        $val = $default;
+    }
+    // 3 cibles pour être inratable
+    $_SERVER[$key] = $val;
+    $_ENV[$key]    = $val;
+    putenv($key.'='.$val);
 }
 
-// Démarrage "classique" (pas de autoload_runtime / pas de Dotenv)
-$kernel  = new Kernel($env, $debug);
-$request = Request::createFromGlobals();
-$response = $kernel->handle($request);
-$response->send();
-$kernel->terminate($request, $response);
+// (Optionnel mais très utile) si vous voulez forcer le runtime générique
+// qui ne fait AUCUN chargement .env même si variables absentes.
+// Décommentez la ligne suivante si besoin supplémentaire.
+putenv('APP_RUNTIME=Symfony\Component\Runtime\GenericRuntim');
+
+use App\Kernel;
+
+require_once dirname(__DIR__).'/vendor/autoload_runtime.php';
+
+return function (array $context) {
+    // Ici, APP_ENV et APP_DEBUG sont déjà présents dans $_SERVER
+    return new Kernel($context['APP_ENV'], (bool) $context['APP_DEBUG']);
+};

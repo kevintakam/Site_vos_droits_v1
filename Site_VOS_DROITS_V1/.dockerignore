@@ -6,3 +6,4 @@ var/log
 vendor
 .env.local
 .env.*.local
+.env
