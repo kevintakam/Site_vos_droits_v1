@@ -1,0 +1,37 @@
+services:
+  app:
+    build: .
+    container_name: app-web
+    ports:
+      - "8080:80"
+    working_dir: /var/www/html
+    environment:
+      APP_ENV: ${APP_ENV:-dev}
+      APP_SECRET: ${APP_SECRET:-change_me}
+      APP_URL: ${APP_URL:-http://localhost:8080}
+      DATABASE_URL: mysql://symfony:${MYSQL_PASSWORD:-symfony}@db:3306/${MYSQL_DATABASE:-bd_droits_juridiques}?serverVersion=8.0&charset=utf8mb4
+      # MAILER_DSN: ${MAILER_DSN:-}
+      APP_FROM_EMAIL: ${APP_FROM_EMAIL:-}
+      APP_FROM_NAME: ${APP_FROM_NAME:-}
+    volumes:
+      - ./:/var/www/html
+      - ./docker/apache.conf:/etc/apache2/sites-available/000-default.conf:ro
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/custom.ini:ro
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    container_name: app-db
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-bd_droits_juridiques}
+      MYSQL_USER: ${MYSQL_USER:-symfony}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-symfony}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+    ports:
+      - "3307:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:

@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% block title %}Connexion{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+  <h1>Connexion</h1>
+
+ {% if error %}
+  <div class="alert alert-error">{{ error }}</div>
+{% endif %}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }}">
+                {{ message|raw }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+  <form method="post" class="login-form">
+    <div class="field">
+      <label for="inputEmail">Email</label>
+      <input type="email" id="inputEmail" name="_username" value="{{ last_username }}" required autofocus>
+    </div>
+
+    <div class="field">
+      <label for="inputPassword">Mot de passe</label>
+      <input type="password" id="inputPassword" name="_password" required>
+    </div>
+
+    <button class="btn btn-primary btn-block">Se connecter</button>
+  </form>
+
+  <p class="auth-alt">
+    Pas de compte ? <a href="{{ path('app_register') }}">Créer un compte</a>
+  </p>
+</div>
+{% endblock %}

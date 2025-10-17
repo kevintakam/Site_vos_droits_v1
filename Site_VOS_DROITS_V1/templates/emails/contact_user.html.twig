@@ -1,0 +1,10 @@
+<!doctype html><html lang="fr"><body style="font-family:system-ui,Segoe UI,Roboto,Arial">
+  <h2>Nous avons bien reçu votre message</h2>
+  <p>Bonjour {{ (c.firstName ~ ' ' ~ c.lastName)|trim ?: c.email }},</p>
+  <p>Merci pour votre message. Notre équipe vous répondra au plus vite.</p>
+  {% if c.message %}
+    <p><strong>Votre message :</strong></p>
+    <p style="white-space:pre-line">{{ c.message }}</p>
+  {% endif %}
+  <p style="margin-top:1rem">— Association Défense, Justice et Droit pour Tous</p>
+</body></html>

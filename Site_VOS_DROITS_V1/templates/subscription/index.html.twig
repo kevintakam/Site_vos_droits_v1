@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon abonnement{% endblock %}
+
+{% block body %}
+<div class="subs-wrap">
+  <div class="subs-card">
+    <div class="subs-header">
+      <h1>Mon abonnement</h1>
+      {% if hasActiveSubscription %}
+        <span class="subs-badge">Actif</span>
+      {% else %}
+        <span class="subs-badge" style="background:#fff7e6;color:#8a5200;border-color:#ffe0b2;">Inactif</span>
+      {% endif %}
+    </div>
+
+    {# Flash messages #}
+    {% for label, messages in app.flashes %}
+      {% for message in messages %}
+        <div class="alert alert-{{ label }}">{{ message|raw }}</div>
+      {% endfor %}
+    {% endfor %}
+
+    {% if hasActiveSubscription %}
+      <div class="alert alert-success">
+        Abonnement actif
+        {% if subscription.currentPeriodEnd %}
+          — valide jusqu’au <strong>{{ subscription.currentPeriodEnd|date('d/m/Y') }}</strong>
+        {% endif %}
+        ( <strong>{{ subscription.status }}</strong>).
+      </div>
+
+      <div class="subs-grid">
+        <div>
+          <p class="meta">
+            Votre abonnement est en cours. Vous pouvez gérer vos moyens de paiement, consulter vos factures
+            et annuler le renouvellement via le portail client Stripe.
+          </p>
+        </div>
+        <div>
+          <form method="post" action="{{ path('subscription_portal') }}">
+            <button class="btn btn-outline btn-block">Gérer mon abonnement</button>
+          </form>
+        </div>
+      </div>
+
+    {% else %}
+      <div class="subs-grid">
+        <div class="plan">
+          <h2>Offre mensuelle</h2>
+          <div class="price">10,99&nbsp;€ <span class="muted">/ mois</span></div>
+          <ul class="muted">
+            <li>Conseils & assistance juridiques</li>
+            <li>Modèles de lettres et documents</li>
+            <li>Accès à l’espace membre</li>
+          </ul>
+        </div>
+        <div>
+          {% if app.user %}
+            <form method="post" action="{{ path('subscription_checkout') }}">
+              <button class="btn btn-primary btn-block">Souscrire maintenant</button>
+            </form>
+            <p class="hint">Paiement sécurisé via Stripe. Annulation à tout moment.</p>
+          {% else %}
+            <a href="{{ path('app_login') }}" class="btn btn-primary btn-block">Se connecter / Créer un compte</a>
+            <p class="hint">Vous devez être connecté pour souscrire.</p>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

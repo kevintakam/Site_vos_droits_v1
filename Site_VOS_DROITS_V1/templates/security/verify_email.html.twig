@@ -1,0 +1,25 @@
+{# templates/security/verify_email.html.twig #}
+
+<h1>Vérifiez votre adresse e-mail</h1>
+
+<p>Bonjour {{ user.firstName ?? user.email }},</p>
+
+<p>
+  Merci d’avoir créé un compte sur notre site.<br>
+  Pour activer votre compte, cliquez sur le lien ci-dessous :
+</p>
+<p>
+  <a href="{{ signedUrl }}"
+     style="display:inline-block;padding:10px 15px;background:#1976d2;color:#fff;
+            text-decoration:none;border-radius:6px;font-weight:bold;">
+    Vérifier mon e-mail
+  </a>
+</p>
+{% if expiresAt %}
+  <p style="color:#666;font-size:.9em">
+    ⚠️ Ce lien expirera le {{ expiresAt|date('d/m/Y H:i') }}.
+  </p>
+{% endif %}
+<p style="margin-top:1rem;">
+  Si vous n’êtes pas à l’origine de cette inscription, vous pouvez ignorer cet e-mail.
+</p>

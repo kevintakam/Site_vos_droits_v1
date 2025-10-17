@@ -1,0 +1,219 @@
+{% extends 'base.html.twig' %}
+{% block title %}Accueil — Association Défense, Justice et Droit pour Tous{% endblock %}
+
+
+{% block body %}
+<section class="hero">
+  <img src="{{ asset('assets/img/hero.jpg') }}" alt="Hero" class="hero-img">
+  <div class="hero-overlay">
+    <h1>Protégez vos droits avec nous, pour une justice équitable pour tous</h1>
+    <a href="#contact" class="btn btn-primary">Rejoignez-nous</a>
+  </div>
+</section>
+
+
+<section class="container intro intro--card">
+  <div class="intro-card">
+    <span class="overline">Accès simple au droit</span>
+    <h2>Bienvenue chez Association Défense, Justice et Droit pour Tous</h2>
+
+    <p class="lead">
+      Nous sommes une association engagée à défendre les droits de chacun, en offrant des conseils juridiques adaptés à vos besoins.
+      Notre mission est de garantir une justice équitable pour tous.
+    </p>
+
+    <p>
+      Chaque procédure ne nécessite pas l’assistance d’un avocat : nous vous guidons, vous conseillons et vous accompagnons
+      tout au long de la procédure.
+    </p>
+
+    <div class="intro-actions">
+     {% if app.user %}
+        {% if hasActiveSubscription %}
+        <a class="btn btn-outline is-disabled" aria-disabled="true" tabindex="-1">Abonné — {{ subscription.currentPeriodEnd ? ('jusqu’au ' ~ subscription.currentPeriodEnd|date('d/m/Y')) : 'actif' }}</a>
+        <a href="{{ path('account') }}" class="btn btn-primary">Mon compte</a>
+        {% else %}
+        <a href="{{ path('account') }}" class="btn btn-primary">Mon compte</a>
+        <form method="post" action="{{ path('subscription_checkout') }}" style="display:inline">
+            <button class="btn btn-outline">S’abonner — 10,99 €</button>
+        </form>
+        {% endif %}
+    {% else %}
+        <a href="{{ path('app_login') }}" class="btn btn-outline">S’abonner — 10,99 €</a>
+        <small class="hint">Connexion / création de compte requise</small>
+    {% endif %}
+    </div>
+  </div>
+</section>
+
+
+<section class="container services">
+  <h2>Prestations de service : abonnement mensuel pour seulement 10,99&nbsp;euros</h2>
+  <div class="cards">
+    <article class="card">
+      <img src="{{ asset('assets/img/conseil_assistance.jpg') }}" alt="">
+      <h3>Conseils et assistance juridiques personnalisés</h3>
+      <p>Conseils personnalisés : mise en demeure, jugement/ordonnance, acte de saisie, signification, commandements…</p>
+    </article>
+    <article class="card">
+      <img src="{{ asset('assets/img/creation_doc.jpg') }}" alt="">
+      <h3>Aide à la création</h3>
+      <p>Création d’association/entreprise/société, statuts, dissolution, formalités.</p>
+    </article>
+    <article class="card">
+      <img src="{{ asset('assets/img/droit_etranger.jpg') }}" alt="">
+      <h3>Modèles de lettres & documents juridiques</h3>
+      <p>Licenciement, retraite, contestation, bourse, contentieux, etc.</p>
+    </article>
+    <article class="card">
+      <img src="{{ asset('assets/img/mod_lettre.jpg') }}" alt="">
+      <h3>Droit des étrangers</h3>
+      <p>Titres de séjour, nationalité, OQTF, regroupement familial, droits sociaux…</p>
+    </article>
+  </div>
+</section>
+{% for label, messages in app.flashes %}
+    {% for message in messages %}
+        <div class="alert alert-{{ label }}">
+            {{ message|raw }}
+        </div>
+    {% endfor %}
+{% endfor %}
+<section id="contact" class="container contact-split">
+  <div class="contact-copy">
+    <span class="overline">Nous écrire</span>
+    <h2>Parlez-nous de votre situation</h2>
+    <p class="lead">Expliquez votre contexte en quelques lignes. Nous revenons vers vous avec des premières pistes claires et actionnables.</p>
+
+    <ul class="contact-bullets">
+      <li>Réponse sous 24–48 h</li>
+      <li>Échange confidentiel (RGPD)</li>
+      <li>Sans engagement</li>
+    </ul>
+
+    <div class="trust-badges">
+      <span class="badge">Association loi 1901</span>
+      <span class="badge">RGPD</span>
+      <span class="badge">Transparence</span>
+    </div>
+  </div>
+
+  <div class="contact-form-card">
+ <h3>Contact rapide</h3>
+
+  {% if form is defined %}
+
+
+    {{ form_start(form, {'attr': {'class': 'contact-form', 'novalidate': 'novalidate'}}) }}
+
+      {{ form_errors(form) }}
+
+      <div class="form-grid">
+        <div class="field required {{ form_errors(form.firstname) ? 'has-error' : '' }}">
+          {{ form_label(form.firstname, 'Prénom <span class="req">*</span>', {'label_html': true}) }}
+          {{ form_widget(form.firstname, {
+            attr: {
+              'aria-invalid': form_errors(form.firstname) ? 'true' : 'false'
+            }
+          }) }}
+          <div class="form-error">{{ form_errors(form.firstname) }}</div>
+        </div>
+        <div class="field required {{ form_errors(form.lastname) ? 'has-error' : '' }}">
+          {{ form_label(form.lastname, 'Nom <span class="req">*</span>', {'label_html': true}) }}
+          {{ form_widget(form.lastname, {
+            attr: {
+              'aria-invalid': form_errors(form.lastname) ? 'true' : 'false'
+            }
+          }) }}
+          <div class="form-error">{{ form_errors(form.lastname) }}</div>
+        </div>
+      </div>
+      <div class="field required {{ form_errors(form.email) ? 'has-error' : '' }}">
+        {{ form_label(form.email, 'Email <span class="req">*</span>', {'label_html': true}) }}
+        {{ form_widget(form.email, {
+          attr: {
+            'aria-invalid': form_errors(form.email) ? 'true' : 'false'
+          }
+        }) }}
+        <div class="form-error">{{ form_errors(form.email) }}</div>
+      </div>
+      <div class="field {{ form_errors(form.phone) ? 'has-error' : '' }}">
+        {{ form_label(form.phone, 'Téléphone') }}
+        {{ form_widget(form.phone) }}
+        <div class="form-error">{{ form_errors(form.phone) }}</div>
+      </div>
+      <div class="field required {{ form_errors(form.message) ? 'has-error' : '' }}">
+        {{ form_label(form.message, 'Message <span class="req">*</span>', {'label_html': true}) }}
+        {{ form_widget(form.message, {
+          attr: {
+            rows: 6,
+            'aria-invalid': form_errors(form.message) ? 'true' : 'false'
+          }
+        }) }}
+        <div class="form-error">{{ form_errors(form.message) }}</div>
+      </div>
+      <div class="field checkbox required {{ form_errors(form.is_accepted_cgu) ? 'has-error' : '' }}">
+        <label>
+          {{ form_widget(form.is_accepted_cgu, {
+            attr: {
+              'aria-invalid': form_errors(form.is_accepted_cgu) ? 'true' : 'false'
+            }
+          }) }}
+          J’accepte les CGU <span class="req">*</span>
+        </label>
+        <div class="form-error">{{ form_errors(form.is_accepted_cgu) }}</div>
+      </div>
+      {% if form.vars.submitted and not form.vars.valid %}
+        <p class="form-error-global">Le formulaire contient des erreurs. Veuillez corriger les champs en rouge.</p>
+      {% endif %}
+
+      <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
+
+    {{ form_end(form) }}
+
+    {% else %}
+    <form class="contact-form" method="post" action="#">
+        <div class="form-grid">
+        <div class="field required"><label>Prénom <span class="req">*</span></label><input type="text" required></div>
+        <div class="field required"><label>Nom <span class="req">*</span></label><input type="text" required></div>
+        </div>
+        <div class="field required"><label>Email <span class="req">*</span></label><input type="email" required></div>
+        <div class="field"><label>Téléphone</label><input type="text"></div>
+        <div class="field required"><label>Message <span class="req">*</span></label><textarea rows="5" required></textarea></div>
+        <div class="field checkbox required"><label><input type="checkbox" required> J’accepte les CGU <span class="req">*</span></label></div>
+
+        <p class="form-error-global d-none">Le formulaire contient des erreurs. Veuillez corriger les champs en rouge.</p>
+        <button type="submit" class="btn btn-primary btn-block">Envoyer</button>
+    </form>
+{% endif %}
+
+  </div>
+</section>
+
+<section id="about" class="about-band">
+  <div class="container">
+    <h2>Qui sommes nous ?</h2>
+    <p>
+      Association Défense, Justice et Droit pour Tous est engagée pour un accès simple et équitable au droit.
+      Nous simplifions vos démarches, proposons des conseils personnalisés et un accompagnement structuré pour des résultats
+      clairs et efficaces.
+    </p>
+  </div>
+</section>
+<!--
+<section class="container cta-bottom">
+   {% if app.user and hasActiveSubscription %}
+    <a href="{{ path('subscription') }}" class="btn btn-outline">Mon compte</a>
+  {% else %}
+    <a href="{{ app.user ? path('subscription') : path('app_login') }}" class="btn btn-outline">
+      {{ app.user ? 'S’abonner — 10,99 €' : 'S’abonner — 10,99 €' }}
+    </a>
+  {% endif %}
+</section> -->
+
+{% endblock %}
+{% block javascripts %}
+  {{ parent() }}
+
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+{% block title %}Créer un compte{% endblock %}
+
+{% block body %}
+<div class="auth-container">
+  <h1>Créer un compte</h1>
+
+  {% for label, messages in app.flashes %}
+    {% for message in messages %}
+      <div class="alert alert-{{ label }}">{{ message }}</div>
+    {% endfor %}
+  {% endfor %}
+
+  {{ form_start(registrationForm, {'attr': {'class': 'register-form', 'novalidate': 'novalidate'}}) }}
+    <div class="field">
+      {{ form_label(registrationForm.firstname, 'Prénom') }}
+      {{ form_widget(registrationForm.firstname, {'attr': {'placeholder': 'Votre prénom'}}) }}
+      <div class="form-error">{{ form_errors(registrationForm.firstname) }}</div>
+    </div>
+
+    <div class="field">
+      {{ form_label(registrationForm.lastname, 'Nom') }}
+      {{ form_widget(registrationForm.lastname, {'attr': {'placeholder': 'Votre nom'}}) }}
+      <div class="form-error">{{ form_errors(registrationForm.lastname) }}</div>
+    </div>
+
+    <div class="field required">
+      {{ form_label(registrationForm.email, 'Email *') }}
+      {{ form_widget(registrationForm.email, {'attr': {'placeholder': 'exemple@mail.com'}}) }}
+      <div class="form-error">{{ form_errors(registrationForm.email) }}</div>
+    </div>
+
+    <div class="field required">
+      {{ form_label(registrationForm.plainPassword.first, 'Mot de passe *') }}
+      {{ form_widget(registrationForm.plainPassword.first, {'attr': {'placeholder': 'Mot de passe (min. 8 caractères)'}}) }}
+      <div class="form-error">{{ form_errors(registrationForm.plainPassword.first) }}</div>
+    </div>
+
+    <div class="field required">
+      {{ form_label(registrationForm.plainPassword.second, 'Confirmer le mot de passe *') }}
+      {{ form_widget(registrationForm.plainPassword.second, {'attr': {'placeholder': 'Confirmez votre mot de passe'}}) }}
+      <div class="form-error">{{ form_errors(registrationForm.plainPassword.second) }}</div>
+    </div>
+
+    <div class="field checkbox required">
+      <label>
+        {{ form_widget(registrationForm.agreeTerms) }}
+        J’accepte les <a href="{{ path('cgv') }}" target="_blank" rel="noopener" class="cgu">CGU</a>
+      </label>
+      <div class="form-error">{{ form_errors(registrationForm.agreeTerms) }}</div>
+    </div>
+
+    <button class="btn btn-primary btn-block">Créer mon compte</button>
+  {{ form_end(registrationForm) }}
+
+  <p class="auth-alt">
+    Déjà un compte ? <a href="{{ path('app_login') }}">Se connecter</a>
+  </p>
+</div>
+{% endblock %}
